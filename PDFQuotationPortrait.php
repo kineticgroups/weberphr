@@ -246,7 +246,7 @@ if (DB_num_rows($result)>0){
 
 	// Print salesorders.comments:
 	$YPos -= $FontSize*2;
-	$pdf->addText($XPos, $YPos+$FontSize-370, $FontSize, _('Notes').':');
+	$pdf->addText($XPos, $YPos+15, $FontSize, _('Notes').':');
 	$Width2 = $Page_Width-$Right_Margin-120;// Width to print salesorders.comments.
 	$LeftOvers = trim($myrow['comments']);
 	while(mb_strlen($LeftOvers) > 1) {
@@ -254,7 +254,7 @@ if (DB_num_rows($result)>0){
 		if ($YPos < ($Bottom_Margin)) {// Begins new page.
 			include ('includes/PDFQuotationPageHeader.inc');
 		}
-		$LeftOvers = $pdf->addTextWrap(40, $YPos+$FontSize-380, $Width2, $FontSize, $LeftOvers);
+		$LeftOvers = $pdf->addTextWrap(40, $YPos, $Width2, $FontSize, $LeftOvers);
 	}
 
 } /*end if there are line details to show on the quotation*/

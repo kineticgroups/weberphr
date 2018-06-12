@@ -248,7 +248,7 @@ if (DB_num_rows($result)>0){
 	$LeftOvers = $pdf->addTextWrap($Page_Width-$Right_Margin-90, $YPos, 90, $FontSize, locale_number_format($QuotationTotal,$myrow['currdecimalplaces']), 'right');
 
 	// Print salesorders.comments:
-	$YPos -= 200;
+	$YPos -= $FontSize*2;
 	$pdf->addText($XPos, $YPos+20, $FontSize, _('Notes').':');
 	$Width2 = $Page_Width-$Right_Margin-120;// Width to print salesorders.comments.
 	$LeftOvers = trim($myrow['comments']);
