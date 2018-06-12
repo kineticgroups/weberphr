@@ -195,17 +195,17 @@ if (DB_num_rows($result)>0){
 		$LineTotal = $SubTot + $TaxAmount;
 		$DisplayTotal = locale_number_format($LineTotal,$myrow['currdecimalplaces']);
 
-		$FontSize = 8;// Font size for the line item.
+		$FontSize = 6;// Font size for the line item.
 
-		$LeftOvers = $pdf->addText($Left_Margin, $YPos+$FontSize+25, $FontSize, $myrow2['stkcode']);
-		$LeftOvers = $pdf->addText(120, $YPos+$FontSize+25, $FontSize, $myrow2['description']);
-		$LeftOvers = $pdf->addTextWrap(160, $YPos+$FontSize+16,85,$FontSize,$DisplayQty,'right');
+		$LeftOvers = $pdf->addText($Left_Margin, $YPos+$FontSize+22, $FontSize, $myrow2['stkcode']);
+		$LeftOvers = $pdf->addText(120, $YPos+$FontSize+22, $FontSize, $myrow2['description']);
+		$LeftOvers = $pdf->addTextWrap(170, $YPos+$FontSize+16,85,$FontSize,$DisplayQty,'right');
 		$LeftOvers = $pdf->addTextWrap(230, $YPos+$FontSize+16,85,$FontSize,$DisplayPrice,'right');
 		if ($DisplayDiscount > 0){
 			$LeftOvers = $pdf->addTextWrap(270, $YPos+$FontSize+16,85,$FontSize,$DisplayDiscount,'right');
 		}
 		$LeftOvers = $pdf->addTextWrap(320, $YPos+$FontSize+16,85,$FontSize,$DisplayTaxClass,'right');
-		$LeftOvers = $pdf->addTextWrap(410, $YPos+$FontSize+16,85,$FontSize,$DisplayTaxAmount,'center');// RChacon: To review align to right.**********
+		$LeftOvers = $pdf->addTextWrap(420, $YPos+$FontSize+16,85,$FontSize,$DisplayTaxAmount,'center');// RChacon: To review align to right.**********
 		$LeftOvers = $pdf->addTextWrap($Page_Width-$Right_Margin-100, $YPos+$FontSize+16, 90, $FontSize, $DisplayTotal,'right');
 
 		// Prints salesorderdetails.narrative:
@@ -217,7 +217,7 @@ if (DB_num_rows($result)>0){
 			if ($YPos < ($Bottom_Margin)) {// Begins new page.
 				include('includes/PDFQuotationPortraitPageHeader.inc');
 			}
-			$LeftOvers = $pdf->addTextWrap(120, $YPos, $Width2, $FontSize2, $LeftOvers);
+			$LeftOvers = $pdf->addTextWrap(120, $YPos+21, $Width2, $FontSize2, $LeftOvers);
 		}
 
 		$QuotationTotal += $LineTotal;
@@ -233,7 +233,7 @@ if (DB_num_rows($result)>0){
 		include('includes/PDFQuotationPortraitPageHeader.inc');
 	} //end if need a new page headed up
 
-	$FontSize = 8;
+	$FontSize = 7;
 	$YPos -= $line_height;
 	$LeftOvers = $pdf->addTextWrap($Page_Width-$Right_Margin-100-655, $YPos, 655, $FontSize, _('Quotation Excluding Tax'),'right');
 	$LeftOvers = $pdf->addTextWrap($Page_Width-$Right_Margin-100, $YPos, 90, $FontSize, locale_number_format($QuotationTotalEx,$myrow['currdecimalplaces']), 'right');

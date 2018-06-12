@@ -193,7 +193,7 @@ if (DB_num_rows($result)>0){
 		$LineTotal = $SubTot + $TaxAmount;
 		$DisplayTotal = locale_number_format($LineTotal,$myrow['currdecimalplaces']);
 
-		$FontSize = 10;// Font size for the line item.
+		$FontSize = 8;// Font size for the line item.
 
 		$LeftOvers = $pdf->addText($Left_Margin+5, $YPos+$FontSize+35, $FontSize, $myrow2['stkcode']);
 		$LeftOvers = $pdf->addText(165, $YPos+$FontSize+35, $FontSize, $myrow2['description']);
@@ -207,7 +207,7 @@ if (DB_num_rows($result)>0){
 		$LeftOvers = $pdf->addTextWrap($Page_Width-$Right_Margin-90, $YPos+35, 90, $FontSize, $DisplayTotal,'right');
 
 		// Prints salesorderdetails.narrative:
-		$FontSize2 = $FontSize*0.8;// Font size to print salesorderdetails.narrative.
+		$FontSize2 = $FontSize*0.86;// Font size to print salesorderdetails.narrative.
 		$Width2 = $Page_Width-$Right_Margin-145;// Width to print salesorderdetails.narrative.
 		$LeftOvers = trim($myrow2['narrative']);
 		//**********
@@ -220,7 +220,7 @@ if (DB_num_rows($result)>0){
 			if ($YPos < ($Bottom_Margin)) {// Begins new page.
 				include ('includes/PDFQuotationPageHeader.inc');
 			}
-			$LeftOvers = $pdf->addTextWrap(145, $YPos, $Width2, $FontSize2, $LeftOvers);
+			$LeftOvers = $pdf->addTextWrap(165, $YPos+33, $Width2, $FontSize2, $LeftOvers);
 		}
 
 		$QuotationTotal += $LineTotal;
@@ -236,7 +236,7 @@ if (DB_num_rows($result)>0){
 			include ('includes/PDFQuotationPageHeader.inc');
 	} //end if need a new page headed up
 
-	$FontSize = 10;
+	$FontSize = 9;
 	$YPos -= $line_height;
 	$LeftOvers = $pdf->addTextWrap($Page_Width-$Right_Margin-90-655, $YPos, 655, $FontSize, _('Quotation Excluding Tax'),'right');
 	$LeftOvers = $pdf->addTextWrap($Page_Width-$Right_Margin-90, $YPos, 90, $FontSize, locale_number_format($QuotationTotalEx,$myrow['currdecimalplaces']), 'right');
@@ -248,8 +248,8 @@ if (DB_num_rows($result)>0){
 	$LeftOvers = $pdf->addTextWrap($Page_Width-$Right_Margin-90, $YPos, 90, $FontSize, locale_number_format($QuotationTotal,$myrow['currdecimalplaces']), 'right');
 
 	// Print salesorders.comments:
-	$YPos -= $FontSize*2;
-	$pdf->addText($XPos, $YPos+15, $FontSize, _('Notes').':');
+	$YPos -= 200;
+	$pdf->addText($XPos, $YPos+20, $FontSize, _('Notes').':');
 	$Width2 = $Page_Width-$Right_Margin-120;// Width to print salesorders.comments.
 	$LeftOvers = trim($myrow['comments']);
 	//**********

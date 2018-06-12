@@ -37,7 +37,7 @@ $pdf->addTextWrap($Page_Width-$Right_Margin-200, $Page_Height-$Top_Margin-10, 20
 // Prints company info:
 $XPos = $Page_Width/2+$Left_Margin;
 $YPos = 512;
-$FontSize = 10;
+$FontSize = 8;
 $pdf->addText($XPos-420, $YPos, $FontSize, $_SESSION['CompanyRecord']['coyname']);
 $YPos -= $FontSize;
 $FontSize = 10;
@@ -54,23 +54,27 @@ $pdf->addText($XPos-420, $YPos-40, $FontSize, $_SESSION['CompanyRecord']['email'
 // Prints 'Delivery To' info:
 $XPos = 46;
 $YPos = 566;
-$FontSize=10;
+$FontSize=8;
 $myrow = array_map(html_entity_decode, $myrow);
 $line_height = 15;
-$pdf->addText($XPos+450, $YPos-55, $FontSize+1, _('Delivery To').':' );
-$pdf->addText($XPos+450, $YPos-75, $FontSize, $myrow['deliverto']);
-$pdf->addText($XPos+450, $YPos-90, $FontSize, $myrow['deladd1']);
-$pdf->addText($XPos+450, $YPos-105, $FontSize, $myrow['deladd2']);
-$pdf->addText($XPos+450, $YPos-120, $FontSize, $myrow['deladd3'] . ', ' . $myrow['deladd4'] . ', ' . $myrow['deladd5']);
+$pdf->addText($XPos+470, $YPos-55, $FontSize+1, _('Delivery To').':' );
+$pdf->addText($XPos+470, $YPos-75, $FontSize, $myrow['deliverto']);
+$pdf->addText($XPos+470, $YPos-86, $FontSize, $myrow['deladd1']);
+$pdf->addText($XPos+470, $YPos-95, $FontSize, $myrow['deladd2']);
+$pdf->addText($XPos+470, $YPos-104, $FontSize, $myrow['deladd3']);
+$pdf->addText($XPos+470, $YPos-113, $FontSize, $myrow['deladd4']);
+$pdf->addText($XPos+470, $YPos-122, $FontSize, $myrow['deladd5']);
 
 // Prints 'Quotation For' info:
 $YPos -= 80;
 $line_height = 15;
 $pdf->addText($XPos+275, $YPos+25, $FontSize+1, _('Quotation For').':');
 $pdf->addText($XPos+275, $YPos+5, $FontSize, $myrow['name']);
-$pdf->addText($XPos+275, $YPos-10, $FontSize, $myrow['address1']);
-$pdf->addText($XPos+275, $YPos-25, $FontSize, $myrow['address2']);
-$pdf->addText($XPos+275, $YPos-40, $FontSize, $myrow['address3'] . ', ' . $myrow['address4'] . ', ' . $myrow['address5']);
+$pdf->addText($XPos+275, $YPos-6, $FontSize, $myrow['address1']);
+$pdf->addText($XPos+275, $YPos-15, $FontSize, $myrow['address2']);
+$pdf->addText($XPos+275, $YPos-24, $FontSize, $myrow['address3']);
+$pdf->addText($XPos+275, $YPos-33, $FontSize, $myrow['address4']);
+$pdf->addText($XPos+275, $YPos-42, $FontSize, $myrow['address5']);
 
 
 

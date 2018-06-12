@@ -17,15 +17,15 @@ $pdf->addJpegFromFile($_SESSION['LogoFile'],$XPos-120,780,0,30);
 // Prints 'Quotation' title:
 $pdf->addTextWrap(230, $Page_Height-$Top_Margin-25, $Page_Width, 14, _('Quotation'), 'center');
 
-$pdf->RoundRectangleFill($FormDesign->HeaderRectangle2->x+35, $Page_Height - $FormDesign->HeaderRectangle2->y-257,$FormDesign->HeaderRectangle2->width+525, $FormDesign->HeaderRectangle2->height+15, $FormDesign->HeaderRectangle2->radius+1,$FormDesign->HeaderRectangle2->radius+1,'1111','DF',"",  array(220, 220, 220));
+$pdf->RoundRectangleFill($FormDesign->HeaderRectangle2->x+35, $Page_Height - $FormDesign->HeaderRectangle2->y-261,$FormDesign->HeaderRectangle2->width+525, $FormDesign->HeaderRectangle2->height+15, $FormDesign->HeaderRectangle2->radius+1,$FormDesign->HeaderRectangle2->radius+1,'1111','DF',"",  array(220, 220, 220));
 
 // Prints company info:
 $XPos = $Page_Width/2+$Left_Margin;
 $YPos = 720;
-$FontSize = 12;
+$FontSize = 10;
 $pdf->addText($XPos-295, $YPos+40, $FontSize-3, $_SESSION['CompanyRecord']['coyname']);
 $YPos = 720;
-$FontSize = 10;
+$FontSize = 9;
 $pdf->addText($XPos-295, $YPos+28, $FontSize-2, $_SESSION['CompanyRecord']['regoffice1'] . ', ' . $_SESSION['CompanyRecord']['regoffice2']);
 //$pdf->addText($XPos-300, $YPos-$FontSize*1, $FontSize, $_SESSION['CompanyRecord']['regoffice2']);
 $pdf->addText($XPos-295, $YPos+20, $FontSize-2, $_SESSION['CompanyRecord']['regoffice3']. ', ' . $_SESSION['CompanyRecord']['regoffice4']);
@@ -39,21 +39,26 @@ $pdf->addText($XPos-295, $YPos-4, $FontSize-2, $_SESSION['CompanyRecord']['email
 // Prints 'Delivery To' info:
 $XPos = 46;
 $YPos = 770;
-$FontSize=10;
+$FontSize=8;
 $myrow = array_map(html_entity_decode, $myrow);
-$pdf->addText($XPos+210, $YPos-80,$FontSize-2, _('Delivery To').':' );
+$pdf->addText($XPos+210, $YPos-80,$FontSize, _('Delivery To').':' );
 $pdf->addText($XPos+210, $YPos-95,$FontSize-2, $myrow['deliverto']);
 $pdf->addText($XPos+210, $YPos-105,$FontSize-2, $myrow['deladd1']);
 $pdf->addText($XPos+210, $YPos-115,$FontSize-2, $myrow['deladd2']);
-$pdf->addText($XPos+210, $YPos-125,$FontSize-2, $myrow['deladd3'] . ' ' . $myrow['deladd4'] . ' ' . $myrow['deladd5']);
+$pdf->addText($XPos+210, $YPos-125,$FontSize-2, $myrow['deladd3']);
+$pdf->addText($XPos+210, $YPos-135,$FontSize-2, $myrow['deladd4']);
+$pdf->addText($XPos+210, $YPos-145,$FontSize-2, $myrow['deladd5']);
+
 
 // Prints 'Quotation For' info:
 $YPos -= 80;
-$pdf->addText($XPos-3, $YPos,$FontSize-2, _('Quotation For').':');
+$pdf->addText($XPos-3, $YPos,$FontSize, _('Quotation For').':');
 $pdf->addText($XPos-3, $YPos-15,$FontSize-2, $myrow['name']);
 $pdf->addText($XPos-3, $YPos-25,$FontSize-2, $myrow['address1']);
 $pdf->addText($XPos-3, $YPos-35,$FontSize-2, $myrow['address2']);
-$pdf->addText($XPos-3, $YPos-45,$FontSize-2, $myrow['address3'] . ' ' . $myrow['address4'] . ' ' . $myrow['address5']);
+$pdf->addText($XPos-3, $YPos-45,$FontSize-2, $myrow['address3']);
+$pdf->addText($XPos-3, $YPos-55,$FontSize-2, $myrow['address4']);
+$pdf->addText($XPos-3, $YPos-65,$FontSize-2, $myrow['address5']);
 
 // // Draws a box with round corners around 'Delivery To' info:
 // $XPos = 50;
@@ -82,24 +87,24 @@ $pdf->addTextWrap($Page_Width-$Right_Margin-205, $Page_Height-$Top_Margin-$FontS
 $pdf->addTextWrap($Page_Width-$Right_Margin-205, $Page_Height-$Top_Margin-$FontSize*3-125, 200, $FontSize-2, _('Date'). ': '.ConvertSQLDate($myrow['quotedate']), 'right');
 $pdf->addTextWrap($Page_Width-$Right_Margin-205, $Page_Height-$Top_Margin-$FontSize*4+35, 200, $FontSize-2, _('Page').': '.$PageNumber, 'right');
 
-$FontSize=10;
+$FontSize=6;
 
 // Prints the currency name:
 require_once('includes/CurrenciesArray.php');// To get the currency name from the currency code.
-$pdf->addText($Page_Width/2+$Left_Margin+20, $YPos, $FontSize-1,
+$pdf->addText($Page_Width/2+$Left_Margin+20, $YPos, $FontSize+1,
 	_('All amounts stated in') . ' ' . $myrow['currcode'] . ' - ' . $CurrencyName[$myrow['currcode']]);
 
 // Prints table header:
 $YPos -= 45;
 $XPos = 40;
-$LeftOvers = $pdf->addTextWrap($Left_Margin,$YPos+18,100,$FontSize, _('Item Code'));
-$LeftOvers = $pdf->addTextWrap(120,$YPos+18,235,$FontSize, _('Item Description'));
-$LeftOvers = $pdf->addTextWrap(180,$YPos+18,85,$FontSize, _('Quantity'),'right');
-$LeftOvers = $pdf->addTextWrap(230,$YPos+18,85,$FontSize,_('Price'),'right');
-$LeftOvers = $pdf->addTextWrap(280,$YPos+18,85,$FontSize, _('Discount'),'right');
-$LeftOvers = $pdf->addTextWrap(330,$YPos+18,85,$FontSize, _('Tax Class'),'right');
-$LeftOvers = $pdf->addTextWrap(400,$YPos+18,85,$FontSize, _('Tax Amount'),'right');
-$LeftOvers = $pdf->addTextWrap($Page_Width-$Right_Margin-100, $YPos+18, 90, $FontSize, _('Total'),'right');
+$LeftOvers = $pdf->addTextWrap($Left_Margin,$YPos+16,100,$FontSize, _('Item Code'));
+$LeftOvers = $pdf->addTextWrap(120,$YPos+16,235,$FontSize, _('Item Description'));
+$LeftOvers = $pdf->addTextWrap(180,$YPos+16,85,$FontSize, _('Quantity'),'right');
+$LeftOvers = $pdf->addTextWrap(225,$YPos+16,85,$FontSize,_('Price'),'right');
+$LeftOvers = $pdf->addTextWrap(280,$YPos+16,85,$FontSize, _('Discount'),'right');
+$LeftOvers = $pdf->addTextWrap(330,$YPos+16,85,$FontSize, _('Tax Class'),'right');
+$LeftOvers = $pdf->addTextWrap(400,$YPos+16,85,$FontSize, _('Tax Amount'),'right');
+$LeftOvers = $pdf->addTextWrap($Page_Width-$Right_Margin-100, $YPos+16, 90, $FontSize, _('Total'),'right');
 
 // Draws a box with round corners around line items:
 $pdf->RoundRectangle(
