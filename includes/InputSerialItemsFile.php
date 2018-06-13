@@ -98,6 +98,7 @@ if ((isset($_FILES['ImportFile']) AND $_FILES['ImportFile']['error'] != '') AND 
 	$_SESSION['CurImportFile']['Processed']=false;
 	$_SESSION['CurImportFile'] = $_FILES['ImportFile'];
 	$_SESSION['CurImportFile']['tmp_name'] = $_SERVER['DOCUMENT_ROOT'].$RootPath.$PathPrefix . '/' . $_SESSION['reports_dir'] . '/'.$LineItem->StockID.'_'.$LineNo.'_'.uniqid(4);
+	
 	if (!move_uploaded_file($_FILES['ImportFile']['tmp_name'],$_SESSION['CurImportFile']['tmp_name'])){
 		prnMsg(_('Error moving temporary file') . '. ' . _('Please check your configuration'),'error' );
 		$LineItem->SerialItemsValid=false;
@@ -151,7 +152,7 @@ if ($ShowFileInfo){
 		</tr>
 		<tr>
 			<td>' .  _('Status') .':</td>
-			<td>' . ($invalid_imports==0?getMsg(_('Valid'),'success'):getMsg(_('Invalid'),'error')) . '</td>
+			<td>' . ($invalid_imports==0?prnMsg(_('Valid'),'success'):prnMsg(_('Invalid'),'error')) . '</td>
 		</tr>
 	</table><br />';
 	$filename = $_SESSION['CurImportFile']['tmp_name'];
