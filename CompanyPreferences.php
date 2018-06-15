@@ -64,6 +64,7 @@ if (isset($_POST['submit'])) {
 									gllink_debtors='" . $_POST['GLLink_Debtors'] . "',
 									gllink_creditors='" . $_POST['GLLink_Creditors'] . "',
 									gllink_stock='" . $_POST['GLLink_Stock'] ."',
+									witholdingtaxexempted='" . $_POST['WitholdingTaxExempted'] ."',
 									freightact='" . $_POST['FreightAct'] . "'
 								WHERE coycode=1";
 
@@ -129,6 +130,7 @@ if ($InputError != 1) {
 					gllink_debtors,
 					gllink_creditors,
 					gllink_stock,
+					witholdingtaxexempted,
 					freightact
 				FROM companies
 				WHERE coycode=1";
@@ -164,6 +166,7 @@ if ($InputError != 1) {
 	$_POST['GLLink_Creditors'] = $myrow['gllink_creditors'];
 	$_POST['GLLink_Stock'] = $myrow['gllink_stock'];
 	$_POST['FreightAct'] = $myrow['freightact'];
+	$_POST['WitholdingTaxExempted'] = $myrow['witholdingtaxexempted'];
 }
 
 echo '<tr>
@@ -448,6 +451,21 @@ echo '<tr>
 		<td><select title="' . _('Select yes to ensure that webERP creates general ledger journals for all inventory transactions. webERP will maintain the stock control accounts (selected under the inventory categories set up) to ensure they balance. Only balance sheet general ledger accounts can be selected.') . '" tabindex="25" name="GLLink_Stock">';
 
 if ($_POST['GLLink_Stock']=='0'){
+	echo '<option selected="selected" value="0">' . _('No') . '</option>';
+	echo '<option value="1">' . _('Yes') . '</option>';
+} else {
+	echo '<option selected="selected" value="1">' . _('Yes') . '</option>';
+	echo '<option value="0">' . _('No') . '</option>';
+}
+
+echo '</select></td>
+	</tr>';
+
+echo '<tr>
+		<td>' . _('Are you witholding tax exempted')  . ':</td>
+		<td><select title="' . _('Select no to enable witholding tax receivable options.') . '" tabindex="26" name="WitholdingTaxExempted">';
+
+if ($_POST['WitholdingTaxExempted']=='0'){
 	echo '<option selected="selected" value="0">' . _('No') . '</option>';
 	echo '<option value="1">' . _('Yes') . '</option>';
 } else {

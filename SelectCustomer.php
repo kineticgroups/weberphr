@@ -213,6 +213,15 @@ if($_SESSION['CustomerID'] != '' AND !isset($_POST['Search']) AND !isset($_POST[
 	if(isset($_SESSION['CustomerID']) AND isset($_SESSION['BranchCode'])) {
 	echo '<a href="', $RootPath, '/CounterSales.php?DebtorNo=', urlencode($_SESSION['CustomerID']), '&amp;BranchNo=' . $_SESSION['BranchCode'] . '">' . _('Create a Counter Sale for this Customer') . '</a><br />';
 	}
+	//witholding tax links
+	$sql_wht="SELECT witholdingtaxexempted
+	FROM companies ";
+	$result_wht = DB_query($sql_wht);
+	$row_wht = DB_fetch_array($result_wht);
+	if($row_wht['witholdingtaxexempted']==0){
+		echo '<a href="' . $RootPath . '/CustomerWitholdingTax.php?New=true&amp;DebtorNo=' . $_SESSION['CustomerID'] . '">' . _('Witholding Tax for Customer') . '</a><br />';
+
+	}
 	echo '</td><td valign="top" class="select">';
 	// Customer maintenance options:
 	echo '<a href="', $RootPath, '/Customers.php">' . _('Add a New Customer') . '</a><br />';
