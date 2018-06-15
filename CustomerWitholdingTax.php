@@ -12,6 +12,7 @@ include('includes/SQL_CommonFunctions.inc');
 include('includes/CountriesArray.php');
 //js files
 echo '<script type="text/javascript" src="plugins/datatables/datatables.min.js"></script>
+    <script type="text/javascript" src="plugins/datatables/sum.js"></script>
 <script type="text/javascript" src="plugins/select2/js/select2.min.js"></script>';
 
 echo '<a href="' . $RootPath . '/SelectCustomer.php">' . _('Search For Customer') . '</a><br />' . "\n";
@@ -78,7 +79,7 @@ if (isset($_POST['submit'])){
         //get tranaction Details
         $sql_deb_trans = DB_query("SELECT ovamount,trandate FROM debtortrans WHERE transno='".$_POST['DebtorTrans']."' AND debtorno='".$SelectedCustomer."' AND type='12' limit 1");
         $result_trans = DB_fetch_array($sql_deb_trans);
-        $invoiced_amount = $result_trans['ovamount'];
+        $invoiced_amount = ($result_trans['ovamount'] < 0) ? $result_trans['ovamount']*-1 : $result_trans['ovamount'];
         $date_witheld = $result_trans['trandate'];
         //check if invoice already inserted
         if(isset($SelectedWitholding))
@@ -156,7 +157,7 @@ if (!isset($SelectedWitholding)){
 
   	echo '<p class="page_title_text"><img src="' . $RootPath . '/css/' . $Theme . '/images/supplier.png" title="' . _('Customer') . '" alt="" />' . ' ' . _('Customer') . ' : <b>' . $SelectedCustomer . ' - ' . $CustomerName . '</b> ' . _('has been selected') . '.</p>';
 
-  	echo '<table class="dataTable" id="whtTable">
+  	echo '<table class="dataTable" id="whtTable" >
         <thead>
   			<tr>
           <th>', _('Customer'), '</th>
@@ -189,7 +190,7 @@ if (!isset($SelectedWitholding)){
                       <td>'.$myrow['debtortransid'].'</td>
                       <td>'.$myrow['amount'].'</td>
                       <td>'.$myrow['witheldamount'].'</td>
-                      <td>'.(($myrow['status'] == 0) ? 'not cleared' : 'cleared' ).'</td>
+                      <td>'.(($myrow['status'] == 0) ? 'pending' : 'cleared' ).'</td>
                       <td>'.$myrow['certificate'].'</td>
                       <td>'.ConvertSQLDate($myrow['date_witheld']).'</td>
                       <td>'.$myrow['date_of_certificate'].'</td>
@@ -206,7 +207,22 @@ if (!isset($SelectedWitholding)){
                 }
               echo ' </tr>';
         }
-        echo '</tbody></table> <br />';
+        echo '</tbody>
+        <tfoot>
+         <tr>
+             <th>Customer</th>
+             <th>Invoice</th>
+             <th>Amount</th>
+             <th>WHT</th>
+             <th>Status</th>
+             <th>Certificate</th>
+             <th>Date</th>
+             <th>Date</th>
+             <th>Notes</th>
+             <th>#</th>
+         </tr>
+     </tfoot>
+        </table><p>total wht: <span class="total_footer"></span></p> <br />';
 
 }
 if (isset($SelectedWitholding)) {
@@ -303,12 +319,34 @@ if (! isset($_GET['delete'])) {
               $("head").append(\'<link rel="stylesheet" type="text/css" href="plugins/datatables/datatables.min.css"/>\');
 
               //datatables
+              // Setup - add a text input to each footer cell
+  $("#whtTable tfoot th").each( function () {
+      var title = $(this).text();
+      $(this).html( \'<input  type="text" placeholder=".. \'+title+\'" />\' );
+  } );
           var table =  $("#whtTable").DataTable({
-               responsive: true,
+            drawCallback: function () {
+                var api = this.api();
+                $(".total_footer").html(
+                  api.column( 3, {page:"current"} ).data().sum()
+                );
+              },
+               responsive: false,
                buttons: [ "excel", "pdf", "colvis" ]
           });
     table.buttons().container().insertBefore( "#whtTable_filter" );
+    // Apply the search
+   table.columns().every( function () {
+       var that = this;
 
+       $( "input", this.footer() ).on( "keyup change", function () {
+           if ( that.search() !== this.value ) {
+               that
+                   .search( this.value )
+                   .draw();
+           }
+       } );
+   } );
 
   						var wht_status = "'.$_POST["WhtStatus"].'";
 
