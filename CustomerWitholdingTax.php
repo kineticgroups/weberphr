@@ -156,8 +156,8 @@ if (!isset($SelectedWitholding)){
   }
 
   	echo '<p class="page_title_text"><img src="' . $RootPath . '/css/' . $Theme . '/images/supplier.png" title="' . _('Customer') . '" alt="" />' . ' ' . _('Customer') . ' : <b>' . $SelectedCustomer . ' - ' . $CustomerName . '</b> ' . _('has been selected') . '.</p>';
-
-  	echo '<table class="dataTable" id="whtTable" >
+echo '<div style="overflow-x:auto;">';
+  	echo '<table class="dataTable" id="whtTable" class="display" style="width:100%">
         <thead>
   			<tr>
           <th>', _('Customer'), '</th>
@@ -222,7 +222,9 @@ if (!isset($SelectedWitholding)){
              <th>#</th>
          </tr>
      </tfoot>
-        </table><p>total wht: <span class="total_footer"></span></p> <br />';
+        </table>
+          </div>
+        <p>total wht: <span class="total_footer"></span></p> <br />';
 
 }
 if (isset($SelectedWitholding)) {
@@ -322,7 +324,7 @@ if (! isset($_GET['delete'])) {
               // Setup - add a text input to each footer cell
   $("#whtTable tfoot th").each( function () {
       var title = $(this).text();
-      $(this).html( \'<input  type="text" placeholder=".. \'+title+\'" />\' );
+      $(this).html( \'<input size="6"  type="text" placeholder=".. \'+title+\'" />\' );
   } );
           var table =  $("#whtTable").DataTable({
             drawCallback: function () {
