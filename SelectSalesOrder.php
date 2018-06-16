@@ -1073,7 +1073,17 @@ if (isset($StockItemsResult)
 		echo '</tbody>
 			<tfoot>
 				<tr>
-					<td colspan="12" class="number"><b>';
+				<th></th>
+			 <th></th>
+			 <th></th>
+			 <th></th>
+			 <th></th>
+			 <th></th>
+			 <th></th>
+			 <th></th>
+			 <th></th>
+			 <th></th>
+					<th  class="number"><b>';
 
 		if ($_POST['Quotations']=='Orders_Only'){
 			echo _('Total Order(s) Value in');
@@ -1084,13 +1094,13 @@ if (isset($StockItemsResult)
 			$OrdersTotal = '---------';
 		}
 
-		echo ' ' . $_SESSION['CompanyRecord']['currencydefault'] . ':</b></td>
-			<td class="number"><b>' . locale_number_format($OrdersTotal,$_SESSION['CompanyRecord']['decimalplaces']) . '</b></td>';
+		echo ' ' . $_SESSION['CompanyRecord']['currencydefault'] . ':</b></th>
+			<th class="number"><b>' . locale_number_format($OrdersTotal,$_SESSION['CompanyRecord']['decimalplaces']) . '</b></th>';
 
 		if ($_POST['Quotations']=='Orders_Only' AND $AuthRow['cancreate']==0){ //cancreate==0 means can create POs
-			echo '<td>
+			echo '<th>
 					<input type="submit" name="PlacePO" value="' . _('Place') . " " . _('PO') . '" onclick="return confirm(\'' . _('This will create purchase orders for all the items on the checked sales orders above, based on the preferred supplier purchasing data held in the system. Are You Absolutely Sure?') . '\');" />
-				</td>';
+				</th>';
 		}
 
 		echo '</tr>
