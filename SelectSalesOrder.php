@@ -993,7 +993,8 @@ if (isset($StockItemsResult)
 			$PrintLabels = $RootPath . '/PDFShipLabel.php?Type=Sales&ORD=' . $myrow['orderno'];
 
 			if ($_POST['Quotations']=='Orders_Only' OR $_POST['Quotations']=='Overdue_Only'){
-
+				$date_object = DateTime::createFromFormat($_SESSION['DefaultDateFormat'], $FormatedOrderDate);
+				$order_date_timestamp = $date_object->getTimestamp();
 			 /*Check authority to create POs if user has authority then show the check boxes to select sales orders to place POs for otherwise don't provide this option */
 				if ($AuthRow['cancreate']==0 AND $myrow['poplaced']==0){ //cancreate==0 if the user can create POs and not already placed
 					echo '<tr class="striped_row">
@@ -1006,7 +1007,7 @@ if (isset($StockItemsResult)
 			 				<td>' . $myrow['name'] . '</td>
 			 				<td>' . $myrow['brname'] . '</td>
 			 				<td>' . $CustomerRef. '</td>
-			 				<td data-th="Order Date" data-order="'.strtotime($FormatedOrderDate).'">' . $FormatedOrderDate . '</td>
+			 				<td data-th="Order Date" data-order="'.$order_date_timestamp.'">' . $FormatedOrderDate . '</td>
 			 				<td>' . $FormatedDelDate . '</td>
 			 				<td>' . html_entity_decode($myrow['deliverto'],ENT_QUOTES,'UTF-8') . '</td>
 			 				<td class="number">' . $FormatedOrderValue . '</td>
