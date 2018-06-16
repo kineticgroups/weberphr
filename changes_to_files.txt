@@ -1,0 +1,10 @@
+CompanyPreferences.php
+  added witholding tax exemption setting starting around line 464
+    this feature helps to add functionality of income witheld on sales by the company.
+    affected database table is companies and field added is witholdingtaxexempted
+
+SelectCustomer.php
+  added link for witholding tax(only shows up if company is not witholdingtax exempted from companies table)
+  starting around line 217
+/includes/DefineReceiptClass.php
+  added $WitholdingTax variable and add_to_batch function now includes $WitholdingTax;    

@@ -171,6 +171,11 @@ echo '<div style="overflow-x:auto;">';
           <th>', _('Comments'), '</th>
   				<th >Actions</th>
   			</tr></thead><tbody>';
+        $additional_sql = '';
+        if(isset($_SESSION['CustomerID']))
+        {
+          $additional_sql = " AND customerwitholdings.debtorno='".$_SESSION['CustomerID']."'";
+        }
         $sql = "SELECT customerwitholdings.id,
                        customerwitholdings.status,
                         debtorsmaster.name,
@@ -182,7 +187,7 @@ echo '<div style="overflow-x:auto;">';
                         date_witheld,
                         date_of_certificate,
                         notes FROM customerwitholdings JOIN debtorsmaster on customerwitholdings.debtorno=debtorsmaster.debtorno
-                      ";
+                      ".$additional_sql." ";
         $result = DB_query($sql);
         while ($myrow = DB_fetch_array($result)) {
           echo '<tr>';
@@ -193,7 +198,7 @@ echo '<div style="overflow-x:auto;">';
                       <td>'.(($myrow['status'] == 0) ? 'pending' : 'cleared' ).'</td>
                       <td>'.$myrow['certificate'].'</td>
                       <td>'.ConvertSQLDate($myrow['date_witheld']).'</td>
-                      <td>'.$myrow['date_of_certificate'].'</td>
+                      <td>'.ConvertSQLDate($myrow['date_of_certificate']).'</td>
                       <td>'.$myrow['notes'].'</td>';
                 if($myrow['status'] == 0)
                 {
@@ -224,7 +229,7 @@ echo '<div style="overflow-x:auto;">';
      </tfoot>
         </table>
           </div>
-        <p>total wht: <span class="total_footer"></span></p> <br />';
+        <p>Total Witholding Tax: <span class="total_footer"></span></p> <br />';
 
 }
 if (isset($SelectedWitholding)) {
@@ -274,7 +279,7 @@ if (! isset($_GET['delete'])) {
                   echo '<option value="'.$row_trans['transno'].'">NO:'.$row_trans['transno'].' Amount: '.$row_trans['ovamount'].' Received on: '.$row_trans['trandate'].' Reference: '.$row_trans['reference'].'</option>';
 
                 }
-                echo '</td></tr>';
+                echo '</select>'.((DB_num_rows($sql_trans) < 1) ? '<a href="' . $RootPath . '/SelectCustomer.php">Select Customer</a>' : '').'</td></tr>';
         echo '<tr>
               <td>' ._('Witholding Tax value'). ':</td>
               <td><input type="text" name="WitholdingTax" value="'.$_POST['WitholdingTax'].'" /></td>

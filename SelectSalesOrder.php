@@ -10,6 +10,10 @@ $ViewTopic= "SalesOrders";
 $BookMark = "SelectSalesOrder";
 include('includes/header.php');
 include('includes/SQL_CommonFunctions.inc');
+//js files
+echo '<script type="text/javascript" src="plugins/datatables/datatables.min.js"></script>
+    <script type="text/javascript" src="plugins/datatables/sum.js"></script>
+<script type="text/javascript" src="plugins/select2/js/select2.min.js"></script>';
 if (isset($_POST['Reset'])) {
 	unset($_POST);
 }
@@ -889,7 +893,7 @@ if (isset($StockItemsResult)
 
 		$AuthRow=DB_fetch_array($AuthResult);
 
-		echo '<table cellpadding="2" width="95%" class="selection">';
+		echo '<table  width="95%" cellpadding="0" class="selectiond" id="salesTable">';
 		if (is_null($AuthRow['cancreate']) or !isset($AuthRow)) {
 			$AuthRow['cancreate'] = 1;
 		}
@@ -903,19 +907,19 @@ if (isset($StockItemsResult)
 
 		if ( $_POST['Quotations'] == 'Orders_Only' OR $_POST['Quotations'] == 'Overdue_Only' ){
 			echo '<tr>
-								<th class="ascending" >' . _('Modify') . '</th>
+								<th>' . _('Modify') . '</th>
 								<th>' . _('Acknowledge') . '</th>
 								' . $PrintPickLabel . '
 								<th>' . _('Invoice') . '</th>
 								<th>' . _('Dispatch Note') . '</th>
 								<th>' . _('Labels') . '</th>
-								<th class="ascending" >' . _('Customer') . '</th>
-								<th class="ascending" >' . _('Branch') . '</th>
-								<th class="ascending" >' . _('Cust Order') . ' #</th>
-								<th class="ascending" >' . _('Order Date') . '</th>
-								<th class="ascending" >' . _('Req Del Date') . '</th>
-								<th class="ascending" >' . _('Delivery To') . '</th>
-								<th class="ascending" >' . _('Order Total') . '<br />' . $_SESSION['CompanyRecord']['currencydefault'] . '</th>';
+								<th>' . _('Customer') . '</th>
+								<th>' . _('Branch') . '</th>
+								<th>' . _('Cust Order') . '#</th>
+								<th>' . _('Order Date') . '</th>
+								<th >' . _('Req Del Date') . '</th>
+								<th >' . _('Delivery To') . '</th>
+								<th >' . _('Order Total') . '' . $_SESSION['CompanyRecord']['currencydefault'] . '</th>';
 
 			if ($AuthRow['cancreate']==0){ //If cancreate==0 then this means the user can create orders hmmm!!
 				echo '<th>' . _('Place PO') . '</th>';
@@ -924,15 +928,15 @@ if (isset($StockItemsResult)
 			echo '</tr>';
 		} else {  /* displaying only quotations */
 			echo '<tr>
-								<th class="ascending">' . _('Modify') . '</th>
+								<th >' . _('Modify') . '</th>
 								<th>' . _('Print Quote') . '</th>
-								<th class="ascending" >' . _('Customer') . '</th>
-								<th class="ascending" >' . _('Branch') . '</th>
-								<th class="ascending" >' . _('Cust Ref') . ' #</th>
-								<th class="ascending" >' . _('Quote Date') . '</th>
-								<th class="ascending" >' . _('Req Del Date') . '</th>
-								<th class="ascending" >' . _('Delivery To') . '</th>
-								<th class="ascending" >' . _('Quote Total') .  '<br />' . $_SESSION['CompanyRecord']['currencydefault'] . '</th>
+								<th>' . _('Customer') . '</th>
+								<th>' . _('Branch') . '</th>
+								<th>' . _('Cust Ref') . ' </th>
+								<th>' . _('Quote Date') . '</th>
+								<th>' . _('Req Del Date') . '</th>
+								<th >' . _('Delivery To') . '</th>
+								<th >' . _('Quote Total') .  '<br />' . $_SESSION['CompanyRecord']['currencydefault'] . '</th>
 							</tr>';
 		}
 
@@ -1001,7 +1005,7 @@ if (isset($StockItemsResult)
 							<td><a href="' . $PrintLabels . '">' . _('Labels') . '</a></td>
 			 				<td>' . $myrow['name'] . '</td>
 			 				<td>' . $myrow['brname'] . '</td>
-			 				<td>' . $CustomerRef . '</td>
+			 				<td>' . ((mb_strlen($CustomerRef) > 2) ? $CustomerRef : '..') . '</td>
 			 				<td>' . $FormatedOrderDate . '</td>
 			 				<td>' . $FormatedDelDate . '</td>
 			 				<td>' . html_entity_decode($myrow['deliverto'],ENT_QUOTES,'UTF-8') . '</td>
@@ -1092,7 +1096,27 @@ if (isset($StockItemsResult)
 		echo '</tr>
 			</tfoot>
 		</table>';
+		//scripts
+		echo '<script>
+							$( document ).ready(function() {
+
+								//add css for datatables
+								$("head").append(\'<link rel="stylesheet" type="text/css" href="plugins/datatables/datatables.min.css"/>\');
+
+								//datatables
+
+
+						var table =  $("#salesTable").DataTable({
+								 responsive: false,
+								 buttons: [ "excel", "pdf", "colvis" ]
+						});
+
+	});
+
+					</script>';
 	} //end if there are some orders to show
+
+
 }
 
 echo '</div>

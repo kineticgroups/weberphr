@@ -105,6 +105,17 @@ if (!isset($_GET['Delete']) AND isset($_SESSION['ReceiptBatch' . $identifier])){
 			prnMsg(_('The functional exchange rate entered should be numeric'),'warn');
 		}
 	}
+	//add withdolding tax amounts
+	if(isset($_POST['WitholdingTax']) AND $_POST['WitholdingTax']!='')
+	{
+		if(is_numeric(filter_number_format($_POST['WitholdingTax'])) AND $_POST['WitholdingTax'] >= 0)
+		{
+			$_SESSION['ReceiptBatch' . $identifier]->WitholdingTax=filter_number_format($_POST['WitholdingTax']);
+		}
+		else {
+			prnMsg(_('The witholding tax entered should be numeric'),'warn');
+		}
+	}
 	if (!isset($_POST['ReceiptType'])) {
 		$_POST['ReceiptType'] = '';
 	}
@@ -218,7 +229,8 @@ if (isset($_POST['Process'])){ //user hit submit a new entry to the receipt batc
 													$_POST['GLCode'],
 													$_POST['PayeeBankDetail'],
 													$_POST['CustomerName'],
-													$_POST['tag']);
+													$_POST['tag'],
+													filter_number_format($_POST['WitholdingTax']));
 			/*Make sure the same receipt is not double processed by a page refresh */
 			$Cancel = 1;
 		}
@@ -231,6 +243,7 @@ if (isset($Cancel)){
 	unset($_POST['CustomerName']);
 	unset($_POST['Amount']);
 	unset($_POST['Discount']);
+	unset($_POST['WitholdingTax']);
 	unset($_POST['Narrative']);
 	unset($_POST['PayeeBankDetail']);
 }
@@ -475,6 +488,27 @@ if (isset($_POST['CommitBatch'])){
 			$DbgMsg = _('The SQL that failed to update the date of the last payment received was');
 			$ErrMsg = _('Cannot update the customer record for the date of the last payment received because');
 			$result = DB_query($SQL,$ErrMsg,$DbgMsg,true);
+
+			//add witholdings if the witholding value is not 0
+			if($ReceiptItem->WitholdingTax != 0)
+			{
+				$exchange_rate = $_SESSION['ReceiptBatch' . $identifier]->FunctionalExRate*$_SESSION['ReceiptBatch' . $identifier]->ExRate;
+				$invoiced_amount = $exchange_rate*$ReceiptItem->Amount;
+				$sql = "INSERT INTO customerwitholdings(debtorno,debtortransid,amount,witheldamount,date_witheld,date_of_certificate,notes)
+                VALUES(
+                  '" . $ReceiptItem->Customer. "',
+                  '" . $_SESSION['ReceiptBatch' . $identifier]->BatchNo . "',
+                  '" . $invoiced_amount . "',
+                  '" . $ReceiptItem->WitholdingTax . "',
+                  '" . FormatDateForSQL($_SESSION['ReceiptBatch' . $identifier]->DateBanked) . "',
+                  '0000-00-00',
+                  '" . $ReceiptItem->Narrative . "'
+                )";
+                $ErrMsg = _('The witholding tax couldnot be inserted because');
+               $DbgMsg = _('The SQL used to insert witholding tax and failed was');
+               $result = DB_query($sql,$ErrMsg,$DbgMsg);
+
+			}
 
 		} //end of if its a customer receipt
 		$BatchDiscount += ($ReceiptItem->Discount/$_SESSION['ReceiptBatch' . $identifier]->ExRate/$_SESSION['ReceiptBatch' . $identifier]->FunctionalExRate);
@@ -987,7 +1021,7 @@ if (isset($_SESSION['ReceiptBatch' . $identifier])){
 	echo '<table width="90%" class="selection">
 		<tr>
 			<th>' . _('Amount') . ' ' . _('Received') . '</th>
-			<th>' . _('Discount') . '</th>
+			<th>' . _('Discount') . '</th>' .(($_SESSION['ReceiptBatch' . $identifier]->WitholdingTaxExempted == '0') ? '<th>Witholding</th>' : '') .'
 			<th>' . _('Customer') . '</th>
 			<th>' . _('GL Code') . '</th>
 			<th>' . _('Narrative') . '</th>
@@ -1005,6 +1039,7 @@ if (isset($_SESSION['ReceiptBatch' . $identifier])){
 		echo '<tr>
 				<td class="number">' . locale_number_format($ReceiptItem->Amount,$_SESSION['ReceiptBatch' . $identifier]->CurrDecimalPlaces) . '</td>
 				<td class="number">' . locale_number_format($ReceiptItem->Discount,$_SESSION['ReceiptBatch' . $identifier]->CurrDecimalPlaces) . '</td>
+				'.(($_SESSION['ReceiptBatch' . $identifier]->WitholdingTaxExempted == '0') ? '<td>'.$ReceiptItem->WitholdingTax.'</td>' : '') .'
 				<td>' . stripslashes($ReceiptItem->CustomerName) . '</td>
 				<td>' . $ReceiptItem->GLCode.' - '.$myrow['accountname'] . '</td>
 				<td>' .  stripslashes($ReceiptItem->Narrative) . '</td>
@@ -1167,6 +1202,9 @@ if (((isset($_SESSION['CustomerRecord' . $identifier])
 	if (!isset($_POST['Discount'])) {
 		$_POST['Discount']=0;
 	}
+	if (!isset($_POST['WitholdingTax'])) {
+		$_POST['WitholdingTax']=0;
+	}
 	if (!isset($_POST['PayeeBankDetail'])) {
 		$_POST['PayeeBankDetail']='';
 	}
@@ -1186,7 +1224,18 @@ if (((isset($_SESSION['CustomerRecord' . $identifier])
 	} else {
 		echo '<input tabindex="11" type="hidden" name="Discount" value="0" />';
 	}
-
+	//witholding tax links
+	$sql_wht="SELECT witholdingtaxexempted
+	FROM companies ";
+	$result_wht = DB_query($sql_wht);
+	$row_wht = DB_fetch_array($result_wht);
+	$_SESSION['ReceiptBatch' . $identifier]->WitholdingTaxExempted = $row_wht['witholdingtaxexempted'];
+	if($row_wht['witholdingtaxexempted']==0){
+		echo '<tr>
+				<td>' . _('Witholding Tax') . ':</td>
+				<td><input  type="text" name="WitholdingTax" maxlength="12" size="13" class="number" value="' . $_POST['WitholdingTax'] . '" /></td>
+			</tr>';
+	}
 	echo '<tr>
 			<td>' . _('Payee Bank Details') . ':</td>
 			<td><input tabindex="12" type="text" name="PayeeBankDetail" maxlength="22" size="20" value="' . $_POST['PayeeBankDetail'] . '" /></td>

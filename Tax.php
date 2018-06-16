@@ -352,6 +352,15 @@ if (isset($_POST['TaxAuthority']) and isset($_POST['PrintPDF']) and isset($_POST
 	$BookMark = 'Tax'; // Anchor's id in the manual's html document.
 	include('includes/header.php');
 	echo '<p class="page_title_text"><img alt="" src="' . $RootPath . '/css/' . $_SESSION['Theme'] . '/images/money_delete.png" title="' . _('Tax Report') . '" />' . ' ' . _('Tax Reporting') . '</p>';
+	//witholding tax links
+	$sql_wht="SELECT witholdingtaxexempted
+	FROM companies ";
+	$result_wht = DB_query($sql_wht);
+	$row_wht = DB_fetch_array($result_wht);
+	if($row_wht['witholdingtaxexempted']==0){
+		echo '<a href="' . $RootPath . '/CustomerWitholdingTax.php?New=true&amp;DebtorNo=' . $_SESSION['CustomerID'] . '">' . _('Witholding Tax Report') . '</a><br />';
+
+	}
 	echo '<form action="' . htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8') . '" method="post">';
 	echo '<input type="hidden" name="FormID" value="' . $_SESSION['FormID'] . '" />';
 	echo '<table class="selection">';
