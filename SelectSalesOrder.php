@@ -1005,8 +1005,8 @@ if (isset($StockItemsResult)
 							<td><a href="' . $PrintLabels . '">' . _('Labels') . '</a></td>
 			 				<td>' . $myrow['name'] . '</td>
 			 				<td>' . $myrow['brname'] . '</td>
-			 				<td>' . ((mb_strlen($CustomerRef) > 2) ? $CustomerRef : '..') . '</td>
-			 				<td>' . $FormatedOrderDate . '</td>
+			 				<td>' . $CustomerRef. '</td>
+			 				<td data-th="Order Date" data-order="'.strtotime($FormatedOrderDate).'">' . $FormatedOrderDate . '</td>
 			 				<td>' . $FormatedDelDate . '</td>
 			 				<td>' . html_entity_decode($myrow['deliverto'],ENT_QUOTES,'UTF-8') . '</td>
 			 				<td class="number">' . $FormatedOrderValue . '</td>
