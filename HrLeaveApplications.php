@@ -82,9 +82,10 @@ if (isset($_POST['submit'])) {
 		$Errors[$i] = 'LeaveType';
 		$i++;
 	}
-$startmonth ='-1-1';
+$startmonth ='-01-01';
 $endmonth ='-12-31';
-$date_string = date('Y',strtotime($_POST['StartDate']));
+$dateyear=DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['StartDate']);
+$date_string = $dateyear->format('Y');
 	$startyear = $date_string.$startmonth;
 	$endyear = $date_string.$endmonth;
 $sqlleavecount ="SELECT
@@ -93,38 +94,59 @@ $sqlleavecount ="SELECT
                 FROM hremployeeleaves
 								WHERE leave_type_id  = '" . $_POST['LeaveType'] . "'
 								AND leaveemployee_id='".$_POST['EmployeeId']."'
+AND leave_approved='1'
 AND leave_start_date BETWEEN '".$startyear."' AND '".$endyear."'
 								";
 
 $leavefetch=DB_query($sqlleavecount);
 $nodays =0;
-while($leaverow = DB_fetch_array($leavefetch))
-{
 
-	$datetime1 = date_create($leaverow['leave_end_date']);
-	$datetime2 = date_create($leaverow['leave_start_date']);
-	$interval = date_diff($datetime1, $datetime2);
- $interval->format('%a');
- if($interval->format('%a')==0)
- {
-$olddays=1;
-}else
-{
-	$olddays =$interval->format('%a');
-}
- $nodays =$nodays+$olddays;
-}
-$newleavestartdate=date_create(date('Y-m-d',strtotime($_POST['StartDate'])));
-$newleaveenddate=date_create(date('Y-m-d',strtotime($_POST['EndDate'])));
+if (DB_Num_Rows($leavefetch)>0){
 
-	$newinterval = date_diff($newleaveenddate, $newleavestartdate);
+	while($leaverow = DB_fetch_array($leavefetch))
+	{
+
+		$datetime1 = date_create($leaverow['leave_end_date']);
+		$datetime2 = date_create($leaverow['leave_start_date']);
+		$interval = date_diff($datetime1, $datetime2);
+	 $interval->format('%a');
+	 if($interval->format('%a')==0)
+	 {
+	$olddays=1;
+	}else
+	{
+		$olddays =$interval->format('%a');
+	}
+	echo $olddays;
+	 $nodays =$nodays+$olddays;
+	}
+
+}else{
+
+}
+
+$newenddate = DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['EndDate']);
+$newstartdate = DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['StartDate']);
+
+if($newenddate->format('Y-m-d') < $newstartdate->format('Y-m-d')){
+	$InputError = 1;
+	echo '<br />';
+	prnMsg(_('End Date should be higher than Start Date'),'error');
+	$Errors[$i] = 'EndDate';
+	$i++;
+
+}
+
+$newleavestartdate=date_create($newstartdate->format('Y-m-d'));
+$newleaveenddate=date_create($newenddate->format('Y-m-d'));
+
+$newinterval = date_diff($newleaveenddate, $newleavestartdate);
 	if($newinterval->format('%a')==0){
 		$newstartday=1;
 	}else {
-		$newstartday=$newinterval->format('%a');
+		$newstartday=$newinterval->format('%a')+1;
 	}
 $newdays=$newstartday+$nodays;
-$newdays;
 
 if($_POST['LeaveDuration']=="single" OR $_POST['LeaveDuration']=="half"){
 if($_POST['StartDate']!=$_POST['EndDate']){
@@ -186,8 +208,8 @@ $i++;
 			SET leaveemployee_id = '" . $_POST['EmployeeId'] . "',
 			leave_type_id = '" .$_POST['LeaveType']. "',
 			is_half = '" . $_POST['LeaveDuration'] . "',
-leave_start_date= '" . date('Y-m-d',strtotime($_POST['StartDate'])). "',
-leave_end_date= '" . date('Y-m-d',strtotime($_POST['EndDate'])). "',
+leave_start_date= '" . $newstartdate->format('Y-m-d'). "',
+leave_end_date= '" . $newenddate->format('Y-m-d'). "',
 leave_reason= '" . $_POST['Reason']. "',
 leave_approved = '" . $_POST['Approved']. "',
 leave_viewed_by_manager= '" . $_POST['ViewManager']. "',
@@ -254,8 +276,8 @@ leave_end_date ,
 					VALUES ('" . $_POST['EmployeeId'] . "',
 '" . $_POST['LeaveType'] . "',
 '" . $_POST['LeaveDuration']. "',
-'" . date('Y-m-d',strtotime($_POST['StartDate'])) . "',
-'" . date('Y-m-d',strtotime($_POST['EndDate'])). "',
+'" . $newstartdate->format('Y-m-d'). "',
+'" . $newenddate->format('Y-m-d'). "',
 '" . $_POST['Reason'] . "',
 '" . $_POST['Approved']. "',
 '" . $_POST['ViewManager']. "',
@@ -720,10 +742,18 @@ echo'	<tr><td><label for="LeaveType">' . _('Leave Type') .
 	<tr>
 			<td>' . _('Start Date') . ':</td>';
 
+if (isset($SelectedName)) {
+	$StartDate= ConvertSQLDate($_POST['StartDate']);
+	$EndDate= ConvertSQLDate($_POST['EndDate']);
+}else{
+$StartDate=date('Y-m-d');
+	$EndDate=date('Y-m-d');
+}
 
 			echo
+
 			'
-			<td><input type="text" name="StartDate"   class="datepicker" required="required" title="' . _('Start Date ') . '" value="' . $_POST['StartDate'] . '"  alt="'.$_SESSION['DefaultDateFormat'].'"/></td>
+			<td><input type="text" name="StartDate"   class="datepicker" required="required" title="' . _('Start Date ') . '" value="' .$StartDate. '" /></td>
 		</tr>
 
 		<tr>
@@ -732,7 +762,7 @@ echo'	<tr><td><label for="LeaveType">' . _('Leave Type') .
 
 				echo
 				'
-				<td><input type="text" name="EndDate"  class="datepicker" required="required" title="' . _('End Date') . '" value="' .$_POST['EndDate'] . '"  alt="'.$_SESSION['DefaultDateFormat'].'"/></td>
+				<td><input type="text" name="EndDate"  class="datepicker" required="required" title="' . _('End Date') . '" value="' .$EndDate. '" /></td>
 			</tr>
 
 			<tr>
@@ -852,6 +882,7 @@ echo "<script>
 						//get format.
 						var date_format = '".$_SESSION['DefaultDateFormat']."';
 						var new_date_format = date_format.replace('Y', 'yy');
+
 						$('.datepicker').datepicker({
 								changeMonth: true,
 								changeYear: true,
