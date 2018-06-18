@@ -1097,7 +1097,7 @@ if (isset($StockItemsResult)
 			 <th></th>
 			 <th></th>
 			 <th></th>
-					<th  class="number"><b>';
+					<th  ><b>';
 
 		if ($_POST['Quotations']=='Orders_Only'){
 			echo _('Total Order(s) Value in');
@@ -1109,7 +1109,7 @@ if (isset($StockItemsResult)
 		}
 
 		echo ' ' . $_SESSION['CompanyRecord']['currencydefault'] . ':</b></th>
-			<th class="number"><b>' . locale_number_format($OrdersTotal,$_SESSION['CompanyRecord']['decimalplaces']) . '</b></th>';
+			<th ><b>' . locale_number_format($OrdersTotal,$_SESSION['CompanyRecord']['decimalplaces']) . '</b></th>';
 
 		if ($_POST['Quotations']=='Orders_Only' AND $AuthRow['cancreate']==0){ //cancreate==0 means can create POs
 			echo '<th>
