@@ -113,7 +113,8 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/m
 				 <th class="ascending">' . _('Duration') . '</th>
 				 <th class="ascending">' . _('Approved') . '</th>
     			</tr>';
-
+$Fromdate=DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['FromDate']);
+$Todate=DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['ToDate']);
 					$sqluser="SELECT
 				   	user_id ,
 				 		empid
@@ -122,7 +123,7 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/m
 				  ";
 				   $userfetch=DB_query($sqluser);
 
-					if (DB_Num_Rows($userfetch)>0 AND $_SESSION['AccessLevel']!=8 AND $_SESSION['AccessLevel']!=10 AND $_SESSION['AccessLevel']!=11)
+					if (DB_Num_Rows($userfetch)>0 AND !in_array('22',$_SESSION['AllowedPageSecurityTokens']))
 					{
 				 	while($userrow = DB_fetch_array($userfetch))
 				 	{
@@ -140,11 +141,11 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/m
 				 		JOIN hremployees on hremployeeleaves.leaveemployee_id = hremployees.empid
 				 		JOIN hremployeeleavetypes on hremployeeleaves.leave_type_id = hremployeeleavetypes.hrleavetype_id
 
-				 		 WHERE leave_start_date  BETWEEN '".date('Y-m-d',strtotime($SelectedStartDate))."' AND '".date('Y-m-d',strtotime($SelectedEndDate))."'AND
+				 		 WHERE leave_start_date  BETWEEN '".$Fromdate->format('Y-m-d')."' AND '".$Todate->format('Y-m-d')."'AND
             manager_id='".$userrow['empid']."' AND
 						 ";
 				 	}
-				}elseif ($_SESSION['AccessLevel']==8 OR $_SESSION['AccessLevel']==10 OR $_SESSION['AccessLevel']==11)
+				}elseif (in_array('22',$_SESSION['AllowedPageSecurityTokens']))
 
 				 {
 					 $base_sql =	"SELECT employee_leave_id,
@@ -161,7 +162,7 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/m
 	 			JOIN hremployees on hremployeeleaves.leaveemployee_id = hremployees.empid
 	 			JOIN hremployeeleavetypes on hremployeeleaves.leave_type_id = hremployeeleavetypes.hrleavetype_id
 
-	 			 WHERE leave_start_date  BETWEEN '".date('Y-m-d',strtotime($SelectedStartDate))."' AND '".date('Y-m-d',strtotime($SelectedEndDate))."'AND
+	 			 WHERE leave_start_date  BETWEEN '".$Fromdate->format('Y-m-d')."' AND '".$Todate->format('Y-m-d')."'AND
 	 			 ";
 			 }
 
@@ -205,7 +206,7 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/m
 														WHERE leave_type_id  = '" . $MyRow['leave_type_id'] . "'
 														AND leaveemployee_id='".$MyRow['empid']."'
 														AND  	leave_approved ='1'
-														AND leave_start_date  BETWEEN '".date('Y-m-d',strtotime($SelectedStartDate))."' AND '".date('Y-m-d',strtotime($SelectedEndDate))."'";
+														AND leave_start_date  BETWEEN '".$Fromdate->format('Y-m-d')."' AND '".$Todate->format('Y-m-d')."'";
 
 						$leavefetch=DB_query($sqlleavecount);
 						$nodays =0;
