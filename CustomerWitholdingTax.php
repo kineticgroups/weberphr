@@ -43,7 +43,7 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
 		}
     if(!isset($_POST['DateOfCertificate']))
     {
-       $_POST['DateOfCertificate'] = date($_SESSION['DefaultDateFormat']);
+       $_POST['DateOfCertificate'] = date($_SESSION['DefaultDateFormat'],time());
     }
 		$Errors = array();
 
@@ -102,7 +102,7 @@ if (isset($_POST['submit'])){
         }
         else if(!isset($SelectedWitholding))
         {
-        $sql = "INSERT INTO customerwitholdings(debtorno,debtortransid,amount,witheldamount,certificate,date_witheld,date_of_certificate,notes)
+        $sql = "INSERT INTO customerwitholdings(debtorno,debtortransid,amount,witheldamount,certificate,date_witheld,date_of_certificate,status,notes)
                 VALUES(
                   '" . $SelectedCustomer . "',
                   '" . $_POST['DebtorTrans'] . "',
@@ -111,12 +111,17 @@ if (isset($_POST['submit'])){
                   '" . (mb_strlen($_POST['Certificate'])>2 ? $_POST['Certificate'] : NULL) . "',
                   '" . $date_witheld . "',
                   '" . (mb_strlen($_POST['Certificate'])>2 ? FormatDateForSQL($_POST['DateOfCertificate']) : '0000-00-00') . "',
+                  '" . $_POST['WhtStatus'] . "',
                   '" . (mb_strlen($_POST['Notes'])>2 ? $_POST['Notes'] : NULL) . "'
                 )";
                 $ErrMsg = _('The witholding tax couldnot be inserted because');
                $DbgMsg = _('The SQL used to insert witholding tax and failed was');
                $result = DB_query($sql,$ErrMsg,$DbgMsg);
                prnMsg( _('successfully added witholding tax'), 'success');
+
+               unset($_POST['WitholdingTax']);
+               unset($_POST['WhtStatus']);
+               unset($_POST['Notes']);
         }
     }
 
