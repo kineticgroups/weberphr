@@ -1,4 +1,5 @@
 ALTER TABLE `companies` ADD `witholdingtaxexempted` TINYINT(1) NOT NULL DEFAULT '1';
+ALTER TABLE `companies` ADD `witholdingtaxglaccount` VARCHAR(20) NULL DEFAULT NULL;
 INSERT INTO  `scripts` values('CustomerWitholdingTax.php','2', 'WitholdingTax receivable');
 
 CREATE TABLE IF NOT EXISTS `customerwitholdings` (

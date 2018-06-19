@@ -65,6 +65,7 @@ if (isset($_POST['submit'])) {
 									gllink_creditors='" . $_POST['GLLink_Creditors'] . "',
 									gllink_stock='" . $_POST['GLLink_Stock'] ."',
 									witholdingtaxexempted='" . $_POST['WitholdingTaxExempted'] ."',
+									witholdingtaxglaccount='" . $_POST['WitholdingTaxAct'] ."',
 									freightact='" . $_POST['FreightAct'] . "'
 								WHERE coycode=1";
 
@@ -131,6 +132,7 @@ if ($InputError != 1) {
 					gllink_creditors,
 					gllink_stock,
 					witholdingtaxexempted,
+					witholdingtaxglaccount,
 					freightact
 				FROM companies
 				WHERE coycode=1";
@@ -167,6 +169,7 @@ if ($InputError != 1) {
 	$_POST['GLLink_Stock'] = $myrow['gllink_stock'];
 	$_POST['FreightAct'] = $myrow['freightact'];
 	$_POST['WitholdingTaxExempted'] = $myrow['witholdingtaxexempted'];
+	$_POST['WitholdingTaxAct'] = $myrow['witholdingtaxglaccount'];
 }
 
 echo '<tr>
@@ -473,9 +476,25 @@ if ($_POST['WitholdingTaxExempted']=='0'){
 	echo '<option value="0">' . _('No') . '</option>';
 }
 
+
 echo '</select></td>
 	</tr>';
+	echo '<tr>
+			<td>' . _('Witholding Tax receivable GL Account') . ':</td>
+			<td><select title="' . _('Select the general ledger account to be used for holding witholding tax receivable a receipt. ') . '" tabindex="22" name="WitholdingTaxAct">';
 
+	while ($myrow = DB_fetch_row($result)) {
+		if ($_POST['WitholdingTaxAct']==$myrow[0]){
+			echo '<option selected="selected" value="'. $myrow[0] . '">' . htmlspecialchars($myrow[1],ENT_QUOTES,'UTF-8') . ' ('.$myrow[0].')</option>';
+		} else {
+			echo '<option value="'. $myrow[0] . '">' . htmlspecialchars($myrow[1],ENT_QUOTES,'UTF-8') . ' ('.$myrow[0].')</option>';
+		}
+	} //end while loop
+
+	DB_data_seek($result,0);
+
+	echo '</select></td>
+		</tr>';
 
 echo '</table>
 	<br />

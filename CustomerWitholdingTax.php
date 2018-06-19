@@ -162,7 +162,7 @@ if (!isset($SelectedWitholding)){
 
   	echo '<p class="page_title_text"><img src="' . $RootPath . '/css/' . $Theme . '/images/supplier.png" title="' . _('Customer') . '" alt="" />' . ' ' . _('Customer') . ' : <b>' . $SelectedCustomer . ' - ' . $CustomerName . '</b> ' . _('has been selected') . '.</p>';
 echo '<div style="overflow-x:auto;">';
-  	echo '<table class="dataTable" id="whtTable" class="display" style="width:100%">
+  	echo '<table class="dataTable" id="whtTable" class="display" width="100%">
         <thead>
   			<tr>
           <th>', _('Customer'), '</th>
@@ -177,9 +177,9 @@ echo '<div style="overflow-x:auto;">';
   				<th >Actions</th>
   			</tr></thead><tbody>';
         $additional_sql = '';
-        if(isset($_SESSION['CustomerID']))
+        if(isset($_GET['DebtorNo']))
         {
-          $additional_sql = " AND customerwitholdings.debtorno='".$_SESSION['CustomerID']."'";
+          $additional_sql = " AND customerwitholdings.debtorno='".$_GET['DebtorNo']."'";
         }
         $sql = "SELECT customerwitholdings.id,
                        customerwitholdings.status,

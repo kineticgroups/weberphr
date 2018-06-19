@@ -893,7 +893,7 @@ if (isset($StockItemsResult)
 
 		$AuthRow=DB_fetch_array($AuthResult);
 
-		echo '<table  width="95%" cellpadding="0" class="selectiond" id="salesTable">';
+		echo '<table  width="100%" cellpadding="0" class="selectiond" id="salesTable">';
 		if (is_null($AuthRow['cancreate']) or !isset($AuthRow)) {
 			$AuthRow['cancreate'] = 1;
 		}
@@ -924,10 +924,15 @@ if (isset($StockItemsResult)
 			if ($AuthRow['cancreate']==0){ //If cancreate==0 then this means the user can create orders hmmm!!
 				echo '<th>' . _('Place PO') . '</th>';
 			}
+      else if ($AuthRow['cancreate']==1){ //If cancreate==0 then this means the user can create orders hmmm!!
+				echo '<th>&nbsp;</th>';
+			}
 
 			echo '</tr>';
 		} else {  /* displaying only quotations */
 			echo '<tr>
+                <th>&nbsp;</td>
+                <th>&nbsp;</td>
 								<th >' . _('Modify') . '</th>
 								<th>' . _('Print Quote') . '</th>
 								<th>' . _('Customer') . '</th>
@@ -937,6 +942,8 @@ if (isset($StockItemsResult)
 								<th>' . _('Req Del Date') . '</th>
 								<th >' . _('Delivery To') . '</th>
 								<th >' . _('Quote Total') .  '<br />' . $_SESSION['CompanyRecord']['currencydefault'] . '</th>
+                <th>&nbsp;</td>
+                <th>&nbsp;</td>
 							</tr>';
 		}
 
@@ -1014,6 +1021,9 @@ if (isset($StockItemsResult)
 			 				<td class="centre"><input type="checkbox" name="PlacePO_[]" value="' . $myrow['orderno'] . '"/></td>
 			 			</tr>';
 				} else {  /*User is not authorised to create POs so don't even show the option */
+          $empty_result = '';
+          $date_object = DateTime::createFromFormat($_SESSION['DefaultDateFormat'], $FormatedOrderDate);
+  				$order_date_timestamp = $date_object->getTimestamp();
 					printf('<tr class="striped_row">
 							<td><a href="%s">%s</a></td>
 							<td><a href="%s">' . _('Acknowledge') . '</a></td>
@@ -1024,11 +1034,11 @@ if (isset($StockItemsResult)
 							<td>%s</td>
 							<td>%s</td>
 							<td>%s</td>
-							<td>%s</td>
+							<td data-th="Order Date" data-order="'.$order_date_timestamp.'">%s</td>
 							<td>%s</td>
 							<td>%s</td>
 							<td class="number">%s</td>
-							<td></td>
+              <td>%s</td>
 							</tr>',
 							$ModifyPage,
 							$myrow['orderno'],
@@ -1042,21 +1052,30 @@ if (isset($StockItemsResult)
 							$FormatedOrderDate,
 							$FormatedDelDate,
 							html_entity_decode($myrow['deliverto'],ENT_QUOTES,'UTF-8'),
-							$FormatedOrderValue);
+							$FormatedOrderValue,$empty_result);
 				}
 
 			} else { /*must be quotes only */
+        $empty_result = '';
+        $date_object = DateTime::createFromFormat($_SESSION['DefaultDateFormat'], $FormatedOrderDate);
+				$order_date_timestamp = $date_object->getTimestamp();
 				printf('<tr class="striped_row">
+            <td>%s</td>
+            <td>%s</td>
 						<td><a href="%s">%s</a></td>
 						<td><a target="_blank" href="%s">' . _('Landscape') . '</a>&nbsp;&nbsp;<a target="_blank" href="%s">' . _('Portrait') . '</a></td>
 						<td>%s</td>
 						<td>%s</td>
 						<td>%s</td>
-						<td>%s</td>
+						<td data-th="Order Date" data-order="'.$order_date_timestamp.'" >%s</td>
 						<td>%s</td>
 						<td>%s</td>
 						<td class="number">%s</td>
+            <td>%s</td>
+            <td>%s</td>
 						</tr>',
+            $empty_result,
+            $empty_result,
 						$ModifyPage,
 						$myrow['orderno'],
 						$PrintQuotation,
@@ -1067,7 +1086,7 @@ if (isset($StockItemsResult)
 						$FormatedOrderDate,
 						$FormatedDelDate,
 						html_entity_decode($myrow['deliverto'],ENT_QUOTES,'UTF-8'),
-						$FormatedOrderValue);
+						$FormatedOrderValue,$empty_result,$empty_result);
 			}
 		}//end while loop through orders to display
 
@@ -1084,7 +1103,7 @@ if (isset($StockItemsResult)
 			 <th></th>
 			 <th></th>
 			 <th></th>
-					<th  class="number"><b>';
+					<th  ><b>';
 
 		if ($_POST['Quotations']=='Orders_Only'){
 			echo _('Total Order(s) Value in');
@@ -1096,13 +1115,16 @@ if (isset($StockItemsResult)
 		}
 
 		echo ' ' . $_SESSION['CompanyRecord']['currencydefault'] . ':</b></th>
-			<th class="number"><b>' . locale_number_format($OrdersTotal,$_SESSION['CompanyRecord']['decimalplaces']) . '</b></th>';
+			<th ><b>' . locale_number_format($OrdersTotal,$_SESSION['CompanyRecord']['decimalplaces']) . '</b></th>';
 
 		if ($_POST['Quotations']=='Orders_Only' AND $AuthRow['cancreate']==0){ //cancreate==0 means can create POs
 			echo '<th>
 					<input type="submit" name="PlacePO" value="' . _('Place') . " " . _('PO') . '" onclick="return confirm(\'' . _('This will create purchase orders for all the items on the checked sales orders above, based on the preferred supplier purchasing data held in the system. Are You Absolutely Sure?') . '\');" />
 				</th>';
 		}
+    else{
+      echo '<th>&nbsp;</th>';
+    }
 
 		echo '</tr>
 			</tfoot>

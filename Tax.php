@@ -358,7 +358,7 @@ if (isset($_POST['TaxAuthority']) and isset($_POST['PrintPDF']) and isset($_POST
 	$result_wht = DB_query($sql_wht);
 	$row_wht = DB_fetch_array($result_wht);
 	if($row_wht['witholdingtaxexempted']==0){
-		echo '<a href="' . $RootPath . '/CustomerWitholdingTax.php?New=true&amp;DebtorNo=' . $_SESSION['CustomerID'] . '">' . _('Witholding Tax Report') . '</a><br />';
+		echo '<a href="' . $RootPath . '/CustomerWitholdingTax.php">' . _('Witholding Tax Report') . '</a><br />';
 
 	}
 	echo '<form action="' . htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8') . '" method="post">';
