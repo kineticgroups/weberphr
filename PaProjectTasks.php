@@ -103,6 +103,8 @@ if (isset($_POST['submit'])) {
 	}else {
 	$priority=$_POST['Priority'];
 	}
+	$begindate = DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['Begindate']);
+	$enddate = DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['Enddate']);
 
 
 	$checksql = "SELECT count(*)
@@ -125,8 +127,8 @@ if (isset($_POST['submit'])) {
 			SET
 			projecttask_name = '" . $_POST['TaskName'] . "',
 			project_id = '" . $_POST['Project'] . "',
-planbegindate= '" . $_POST['Begindate']. "',
-planenddate= '" . $_POST['Enddate']. "',
+planbegindate= '" . $begindate->format('Y-m-d'). "',
+planenddate= '" . $enddate->format('Y-m-d'). "',
 plannedduration= '" . $_POST['Plannedduration']. "',
 dependanttask= '" . $_POST['Dependent']. "',
 servicetask= '" . $_POST['Servicetask']. "',
@@ -198,8 +200,8 @@ parent_task= '" . $_POST['Parenttask']. "'
 					 )
 					VALUES ('" . $_POST['TaskName'] . "',
 '" . $_POST['Project'] . "',
-'" . $_POST['Begindate'] . "',
-'" . $_POST['Enddate']. "',
+'" . $begindate->format('Y-m-d'). "',
+'" . $enddate->format('Y-m-d'). "',
 '" . $_POST['Plannedduration']. "',
 '" .$_POST['Dependent']. "',
 '" . $_POST['Servicetask'] . "',
@@ -524,16 +526,24 @@ $_POST['Attachments']  = $myrow['attachment'];
 			echo'<option '._(($_POST['Project']== $ProjectId )? 'selected ' : '').' value="'.$ProjectId.'">'.$Row.'</option>';
 				}
 				echo'</select></td>
-		</tr>
+		</tr>';
 
-		<tr>
+		if (isset($SelectedName)) {
+			$Begindate= ConvertSQLDate($_POST['Begindate']);
+			$Enddate= ConvertSQLDate($_POST['Enddate']);
+		}else{
+		$Begindate=date('Y-m-d');
+			$Enddate=date('Y-m-d');
+		}
+
+		echo' <tr>
 				<td>' . _('Planned Begin date') . ':</td>
-				<td><input type="text" name="Begindate" required="required"   class="datepicker" required="required" title="' . _('Planned Begin Date is required') . '"  value="' .$_POST['Begindate'].'""/></td>
+				<td><input type="text" name="Begindate" required="required"   class="datepicker" required="required" title="' . _('Planned Begin Date is required') . '"  value="' .$Begindate.'""/></td>
 			</tr>
 
 			<tr>
 					<td>' . _('Planned End date') . ':</td>
-					<td><input type="text" name="Enddate" required="required"   class="datepicker1" required="required" title="' . _('Planned End Date is required') . '"  value="' .$_POST['Enddate'].'""/></td>
+					<td><input type="text" name="Enddate" required="required"   class="datepicker" required="required" title="' . _('Planned End Date is required') . '"  value="' .$Enddate.'""/></td>
 				</tr>
 				<tr>
 						<td>' . _('Planned Duration(Hrs)') . ':</td>
@@ -638,29 +648,24 @@ $_POST['Attachments']  = $myrow['attachment'];
 			<input type="submit" name="submit" value="' . _('Accept') . '" />
 		</div>
 	</div>
-	</form>
+	</form>';
 
-	<script>
-	$( function() {
-		$(".datepicker").datepicker({
-				changeMonth: true,
-				changeYear: true,
-				showButtonPanel: true,
-				dateFormat: "yy-mm-dd"
-		});
+	echo "<script>
+					$( document ).ready(function() {
+							//create date.
+							//get format.
+							var date_format = '".$_SESSION['DefaultDateFormat']."';
+							var new_date_format = date_format.replace('Y', 'yy');
 
-		$(".datepicker1").datepicker({
-				changeMonth: true,
-				changeYear: true,
-				showButtonPanel: true,
-				dateFormat: "yy-mm-dd"
-		});
-	} );
-	</script>
+							$('.datepicker').datepicker({
+									changeMonth: true,
+									changeYear: true,
+									showButtonPanel: true,
+									dateFormat: new_date_format
+							});
+					});
 
-
-	';
-
+			</script>";
 } // end if user wish to delete
 
 include('includes/footer.php');

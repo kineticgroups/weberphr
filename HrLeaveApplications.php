@@ -86,6 +86,7 @@ $startmonth ='-01-01';
 $endmonth ='-12-31';
 $dateyear=DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['StartDate']);
 $date_string = $dateyear->format('Y');
+
 	$startyear = $date_string.$startmonth;
 	$endyear = $date_string.$endmonth;
 $sqlleavecount ="SELECT
@@ -743,8 +744,8 @@ echo'	<tr><td><label for="LeaveType">' . _('Leave Type') .
 			<td>' . _('Start Date') . ':</td>';
 
 if (isset($SelectedName)) {
-	$StartDate= ConvertSQLDate($_POST['StartDate']);
-	$EndDate= ConvertSQLDate($_POST['EndDate']);
+	$StartDate= $_POST['StartDate'];
+	$EndDate= $_POST['EndDate'];
 }else{
 $StartDate=date('Y-m-d');
 	$EndDate=date('Y-m-d');
@@ -753,7 +754,7 @@ $StartDate=date('Y-m-d');
 			echo
 
 			'
-			<td><input type="text" name="StartDate"   class="datepicker" required="required" title="' . _('Start Date ') . '" value="' .$StartDate. '" /></td>
+			<td><input type="text" name="StartDate"   class="datepicker" required="required" title="' . _('Start Date ') . '" value="' .ConvertSQLDate($StartDate). '" /></td>
 		</tr>
 
 		<tr>
@@ -762,7 +763,7 @@ $StartDate=date('Y-m-d');
 
 				echo
 				'
-				<td><input type="text" name="EndDate"  class="datepicker" required="required" title="' . _('End Date') . '" value="' .$EndDate. '" /></td>
+				<td><input type="text" name="EndDate"  class="datepicker" required="required" title="' . _('End Date') . '" value="' .ConvertSQLDate($EndDate). '" /></td>
 			</tr>
 
 			<tr>
