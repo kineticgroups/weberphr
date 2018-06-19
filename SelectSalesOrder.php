@@ -924,6 +924,9 @@ if (isset($StockItemsResult)
 			if ($AuthRow['cancreate']==0){ //If cancreate==0 then this means the user can create orders hmmm!!
 				echo '<th>' . _('Place PO') . '</th>';
 			}
+      else if ($AuthRow['cancreate']==1){ //If cancreate==0 then this means the user can create orders hmmm!!
+				echo '<th>&nbsp;</th>';
+			}
 
 			echo '</tr>';
 		} else {  /* displaying only quotations */
@@ -1018,6 +1021,9 @@ if (isset($StockItemsResult)
 			 				<td class="centre"><input type="checkbox" name="PlacePO_[]" value="' . $myrow['orderno'] . '"/></td>
 			 			</tr>';
 				} else {  /*User is not authorised to create POs so don't even show the option */
+          $empty_result = '';
+          $date_object = DateTime::createFromFormat($_SESSION['DefaultDateFormat'], $FormatedOrderDate);
+  				$order_date_timestamp = $date_object->getTimestamp();
 					printf('<tr class="striped_row">
 							<td><a href="%s">%s</a></td>
 							<td><a href="%s">' . _('Acknowledge') . '</a></td>
@@ -1028,11 +1034,11 @@ if (isset($StockItemsResult)
 							<td>%s</td>
 							<td>%s</td>
 							<td>%s</td>
-							<td>%s</td>
+							<td data-th="Order Date" data-order="'.$order_date_timestamp.'">%s</td>
 							<td>%s</td>
 							<td>%s</td>
 							<td class="number">%s</td>
-							<td></td>
+              <td>%s</td>
 							</tr>',
 							$ModifyPage,
 							$myrow['orderno'],
@@ -1046,7 +1052,7 @@ if (isset($StockItemsResult)
 							$FormatedOrderDate,
 							$FormatedDelDate,
 							html_entity_decode($myrow['deliverto'],ENT_QUOTES,'UTF-8'),
-							$FormatedOrderValue);
+							$FormatedOrderValue,$empty_result);
 				}
 
 			} else { /*must be quotes only */

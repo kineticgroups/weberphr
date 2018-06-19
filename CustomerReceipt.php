@@ -437,7 +437,7 @@ if (isset($_POST['CommitBatch'])){
 
 		} else { //its not a GL item - its a customer receipt then
 			/*Accumulate the total debtors credit including discount */
-			$BatchDebtorTotal += (($ReceiptItem->Discount + $ReceiptItem->Amount)/$_SESSION['ReceiptBatch' . $identifier]->ExRate/$_SESSION['ReceiptBatch' . $identifier]->FunctionalExRate);
+			$BatchDebtorTotal += (($ReceiptItem->Discount + $ReceiptItem->Amount )/$_SESSION['ReceiptBatch' . $identifier]->ExRate/$_SESSION['ReceiptBatch' . $identifier]->FunctionalExRate);
 			/*Create a DebtorTrans entry for each customer deposit */
 
 			/*The rate of exchange required here is the rate between the functional (home) currency and the customer receipt currency
@@ -507,18 +507,52 @@ if (isset($_POST['CommitBatch'])){
                 $ErrMsg = _('The witholding tax couldnot be inserted because');
                $DbgMsg = _('The SQL used to insert witholding tax and failed was');
                $result = DB_query($sql,$ErrMsg,$DbgMsg);
+			  //insert into GL for witholding tax receivable
+				//check which account
+				$sql_wht_account = DB_query("SELECT witholdingtaxglaccount FROM companies");
+				$sql_row = DB_fetch_array($sql_wht_account);
+				$wht_gl_account = $sql_row['witholdingtaxglaccount'];
+				$witholding_tax_narrative = "Witholding_Tax for customer ".$ReceiptItem->Customer."";
+				//debit wht receivable account
+				$SQL="INSERT INTO gltrans ( type,
+											typeno,
+											trandate,
+											periodno,
+											account,
+											narrative,
+											amount)
+							VALUES (
+								12,
+								'" . $_SESSION['ReceiptBatch' . $identifier]->BatchNo . "',
+								'" . FormatDateForSQL($_SESSION['ReceiptBatch' . $identifier]->DateBanked) . "',
+								'" . $PeriodNo . "',
+								'". $wht_gl_account . "',
+								'" . $witholding_tax_narrative . "',
+								'" . $ReceiptItem->WitholdingTax . "'
+								)";
+				$DbgMsg = _('The SQL that failed to insert the GL transaction for the witholding tax account credit was');
+				$ErrMsg = _('Cannot insert a GL transaction for the witholding account credit');
+				$result = DB_query($SQL,$ErrMsg,$DbgMsg,true);
 
 			}
 
 		} //end of if its a customer receipt
 		$BatchDiscount += ($ReceiptItem->Discount/$_SESSION['ReceiptBatch' . $identifier]->ExRate/$_SESSION['ReceiptBatch' . $identifier]->FunctionalExRate);
-		$BatchReceiptsTotal += ($ReceiptItem->Amount/$_SESSION['ReceiptBatch' . $identifier]->ExRate/$_SESSION['ReceiptBatch' . $identifier]->FunctionalExRate);
+		$BatchReceiptsTotal += (($ReceiptItem->Amount - $ReceiptItem->WitholdingTax)/$_SESSION['ReceiptBatch' . $identifier]->ExRate/$_SESSION['ReceiptBatch' . $identifier]->FunctionalExRate);
 
 	} /*end foreach $ReceiptItem */
 	echo '</tbody></table>';
 
 	/*now enter the BankTrans entry */
+/*	$exchange_rate = $_SESSION['ReceiptBatch' . $identifier]->FunctionalExRate*$_SESSION['ReceiptBatch' . $identifier]->ExRate;
+	$amount_to_bank = $exchange_rate*$ReceiptItem->Amount;
 
+	//add witholdings if the witholding value is not 0
+	if($ReceiptItem->WitholdingTax != 0)
+	{
+		$amount_less_witholding = $ReceiptItem->Amount - $ReceiptItem->WitholdingTax;
+		$amount_to_bank = $exchange_rate*$amount_less_witholding;
+	} */
 	$SQL="INSERT INTO banktrans (type,
 								transno,
 								bankact,
@@ -619,7 +653,7 @@ if (isset($_POST['CommitBatch'])){
 			$result = DB_query($SQL,$ErrMsg,$DbgMsg,true);
 		} //end if there is some discount
 
-	} //end if there is GL work to be done - ie config is to link to GL
+	} //end if there is GL work to be done - ie config is to link to GL	
 	EnsureGLEntriesBalance(12,$_SESSION['ReceiptBatch' . $identifier]->BatchNo);
 
 	$ErrMsg = _('Cannot commit the changes');
@@ -1049,7 +1083,7 @@ if (isset($_SESSION['ReceiptBatch' . $identifier])){
                                                                                            . '&identifier=' . urlencode($identifier) . '">'
                                                                                            . _('Delete') . '</a></td>
 			</tr>';
-		$BatchTotal= $BatchTotal + $ReceiptItem->Amount;
+		$BatchTotal= $BatchTotal + $ReceiptItem->Amount-$ReceiptItem->WitholdingTax;
 	}
 
 	echo '<tr>
