@@ -264,7 +264,8 @@ if (! isset($_GET['delete'])) {
                      $DbgMsg = _('The SQL used to retrive witholding tax and failed was');
                      $result = DB_query($sql_edit,$ErrMsg,$DbgMsg);
                      $wht_row = DB_fetch_array($result);
-                     $_POST['WitholdingTax'] = $wht_row['witheldamount'];
+                     $_POST['DebtorTrans'] = $wht_row['witheldamount'];
+                     $_POST['WitholdingTax'] = $wht_row['debtortransid'];
                      $_POST['Notes'] = $wht_row['notes'];
                      $_POST['DateOfCertificate'] = $wht_row['date_of_certificate'];
                      $_POST['Certificate'] = $wht_row['certificate'];
@@ -277,13 +278,26 @@ if (! isset($_GET['delete'])) {
       }
       echo'
       	<table class="selection"><tr>
-      			<td>' . _('Invoice ') . ':</td>
-      			<td><select name="DebtorTrans" >';
-              $sql_trans = DB_query("SELECT transno,trandate,ovamount,reference from debtortrans where type='12' and debtorno='".$_SESSION['CustomerID']."'");
-                while ($row_trans = DB_fetch_array($sql_trans)) {
-                  echo '<option value="'.$row_trans['transno'].'">NO:'.$row_trans['transno'].' Amount: '.$row_trans['ovamount'].' Received on: '.$row_trans['trandate'].' Reference: '.$row_trans['reference'].'</option>';
+      			<td>' . _('Invoice ') . ':</td>';
+            if(isset($_GET['edit']) && $_GET['edit'] == 1)
+            {
+              $sql_edit = DB_query("SELECT debtortransid FROM customerwitholdings where id='".$_GET['WhtID']."'");
+              $sql_edit_row = DB_fetch_array($sql_edit);
+              $trans_id = $sql_edit_row['debtortransid'];
+              $sql_trans = DB_query("SELECT transno,trandate,ovamount,reference from debtortrans  where type='12' and debtorno='".$_SESSION['CustomerID']."' and transno='".$trans_id."' limit 1");
 
-                }
+            }
+            else if(!isset($_GET['edit']) && $_GET['edit'] != 1)
+            {
+              $sql_trans = DB_query("SELECT transno,trandate,ovamount,reference from debtortrans where type='12' and debtorno='".$_SESSION['CustomerID']."'");
+
+            }
+      			echo '<td><select name="DebtorTrans" >';
+              while ($row_trans = DB_fetch_array($sql_trans)) {
+                echo '<option value="'.$row_trans['transno'].'">NO:'.$row_trans['transno'].' Amount: '.$row_trans['ovamount'].' Received on: '.$row_trans['trandate'].' Reference: '.$row_trans['reference'].'</option>';
+
+              }
+
                 echo '</select>'.((DB_num_rows($sql_trans) < 1) ? '<a href="' . $RootPath . '/SelectCustomer.php">Select Customer</a>' : '').'</td></tr>';
         echo '<tr>
               <td>' ._('Witholding Tax value'). ':</td>
