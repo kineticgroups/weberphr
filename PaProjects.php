@@ -71,6 +71,10 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
     		$Errors[$i] = 'ProjectDescription';
     		$i++;
     	}
+			$begindate = DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['BeginDate']);
+			$enddate = DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['EndDate']);
+
+
       if ($InputError !=1){
 
     		if ($_POST['submit']==_('Update')) { /*so its an existing one */
@@ -86,8 +90,8 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
 								project_description='" . $_POST['ProjectDescription'] . "',
 								parent_project='" . $parent_project . "',
 								customer='" . $_POST['Customer'] . "',
-								begin_date='" . FormatDateForSQL($_POST['BeginDate']) . "',
-								end_date='" . FormatDateForSQL($_POST['EndDate']) . "',
+								begin_date='" .$begindate->format('Y-m-d'). "',
+								end_date='" .$enddate->format('Y-m-d') . "',
 								project_manager='" . $_POST['ProjectManager'] . "',
 								status='" . $_POST['Status'] . "',
 								project_status='" . $_POST['ProjectStatus'] . "',
@@ -139,8 +143,8 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
 									'" . $_POST['ProjectDescription'] . "',
 									'" . $parent_project . "',
 									'" . $_POST['Customer'] . "',
-									'" . FormatDateForSQL($_POST['BeginDate']) . "',
-									'" . FormatDateForSQL($_POST['EndDate']) . "',
+									'" . $begindate->format('Y-m-d')  . "',
+									'" . $enddate->format('Y-m-d') . "',
 									'" . $_POST['ProjectManager'] . "',
     							'" . $_POST['Status'] . "',
     							'" . $_POST['ProjectStatus'] . "',
@@ -307,6 +311,15 @@ if (!isset($ProjectID) OR $ProjectID=='') {
 							echo '</select><a target="_blank" href="'. $RootPath . '/Customers.php">' . ' ' . _('New') . '</a>
 						</td>
 					</tr>';
+
+							if (isset($SelectedName)) {
+								$Begindate= $_POST['BeginDate'];
+								$Enddate= $_POST['EndDate'];
+							}else{
+							$Begindate=date('Y-m-d');
+								$Enddate=date('Y-m-d');
+							}
+
 	echo '<tr>
 					<td>
 						<label>' . _('Project Name') . ' </label>
@@ -314,7 +327,7 @@ if (!isset($ProjectID) OR $ProjectID=='') {
 					</td>
 					<td>
 						<label>' . _('Project Start Date') . ' </label>
-						<input ' . (in_array('BeginDate',$Errors) ?  'class="inputerror datepicker"' : 'class="datepicker"' ) .' type="text" required="required"  name="BeginDate" maxlength="50" value="' . $_POST['BeginDate'] . '" />
+						<input ' . (in_array('BeginDate',$Errors) ?  'class="inputerror datepicker"' : 'class="datepicker"' ) .' type="text" required="required"  name="BeginDate" maxlength="50" value="' . ConvertSQLDate($Begindate) . '" />
 					</td>
 				</tr>';
 	echo '<tr>
@@ -329,7 +342,7 @@ if (!isset($ProjectID) OR $ProjectID=='') {
 						</td>
 						<td>
 							<label>' . _('End Date') . '</label>
-			  			<input ' . (in_array('EndDate',$Errors) ?  'class="inputerror datepicker"' : 'class="datepicker"' ) .' type="text" required="required"  name="EndDate" maxlength="50" value="' . $_POST['EndDate'] . '" />
+			  			<input ' . (in_array('EndDate',$Errors) ?  'class="inputerror datepicker"' : 'class="datepicker"' ) .' type="text" required="required"  name="EndDate" maxlength="50" value="' . ConvertSQLDate($Enddate) . '" />
 						</td>
 					</tr>';
 	echo '<tr>
@@ -476,20 +489,21 @@ echo '<tr>
 		 </tr>
 
 		</table>';
-		echo '
-				<script>
-					$( document ).ready(function() {
-						$(".datepicker").datepicker({
-								changeMonth: true,
-								changeYear: true,
-								showButtonPanel: true,
-								dateFormat: "yy-mm-dd"
+		echo "<script>
+						$( document ).ready(function() {
+								//create date.
+								//get format.
+								var date_format = '".$_SESSION['DefaultDateFormat']."';
+								var new_date_format = date_format.replace('Y', 'yy');
+								$('.datepicker').datepicker({
+										changeMonth: true,
+										changeYear: true,
+										showButtonPanel: true,
+										dateFormat: new_date_format
+								});
 						});
 
-					});
-
-				</script>
-		';
+				</script>";
 
 if (isset($New)) {
 	echo '<div class="centre">

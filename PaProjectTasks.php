@@ -529,8 +529,8 @@ $_POST['Attachments']  = $myrow['attachment'];
 		</tr>';
 
 		if (isset($SelectedName)) {
-			$Begindate= ConvertSQLDate($_POST['Begindate']);
-			$Enddate= ConvertSQLDate($_POST['Enddate']);
+			$Begindate= $_POST['Begindate'];
+			$Enddate= $_POST['Enddate'];
 		}else{
 		$Begindate=date('Y-m-d');
 			$Enddate=date('Y-m-d');
@@ -538,12 +538,12 @@ $_POST['Attachments']  = $myrow['attachment'];
 
 		echo' <tr>
 				<td>' . _('Planned Begin date') . ':</td>
-				<td><input type="text" name="Begindate" required="required"   class="datepicker" required="required" title="' . _('Planned Begin Date is required') . '"  value="' .$Begindate.'""/></td>
+				<td><input type="text" name="Begindate" required="required"   class="datepicker" required="required" title="' . _('Planned Begin Date is required') . '"  value="' .ConvertSQLDate($Begindate).'""/></td>
 			</tr>
 
 			<tr>
 					<td>' . _('Planned End date') . ':</td>
-					<td><input type="text" name="Enddate" required="required"   class="datepicker" required="required" title="' . _('Planned End Date is required') . '"  value="' .$Enddate.'""/></td>
+					<td><input type="text" name="Enddate" required="required"   class="datepicker" required="required" title="' . _('Planned End Date is required') . '"  value="' .ConvertSQLDate($Enddate).'""/></td>
 				</tr>
 				<tr>
 						<td>' . _('Planned Duration(Hrs)') . ':</td>

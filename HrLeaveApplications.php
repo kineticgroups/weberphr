@@ -767,7 +767,7 @@ $StartDate=date('Y-m-d');
 			</tr>
 
 			<tr>
-				<td>' . _('Resaon') . ':</td>
+				<td>' . _('Reason') . ':</td>
 				<td>
 <textarea name="Reason" >' . $_POST['Reason'] .' '. $UserId. '</textarea><br
 >

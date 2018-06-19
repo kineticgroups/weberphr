@@ -95,6 +95,9 @@ echo '</select> &nbsp;&nbsp'._('To') . ':
 //    }
     if(isset($_POST['GenerateReport'])) {
 
+			$Fromdate=DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['FromDate']);
+			$Todate=DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['ToDate']);
+
 		if($_POST['Report']=='all'){
 
     	echo '<table class="selection">
@@ -147,8 +150,8 @@ $sumduration=0;
 					JOIN paprojecttypes ON paprojects.project_type =paprojecttypes.project_type_id
 					WHERE
  	         project_status ='".$myrowstatuslist ['project_status_id']."' AND
-					begin_date Between '".date('Y-m-d',strtotime($_POST['FromDate']))."' AND
-					'".date('Y-m-d',strtotime($_POST['ToDate']))."'
+					begin_date Between '".$Fromdate->format('Y-m-d')."' AND
+					'".$Todate->format('Y-m-d')."'
 					";
 					$ErrMsg = _('The Projects could not be loaded because');
 					$DbgMsg = _('The SQL that was used to get the Projects and failed was');
@@ -220,8 +223,8 @@ echo'</tr>';
 			JOIN paprojecttypes ON paprojects.project_type =paprojecttypes.project_type_id
 			WHERE
 			 project_status ='".$_POST['Report']."' AND
-			begin_date Between '".date('Y-m-d',strtotime($_POST['FromDate']))."' AND
-			'".date('Y-m-d',strtotime($_POST['ToDate']))."'
+			 begin_date Between '".$Fromdate->format('Y-m-d')."' AND
+ 			'".$Todate->format('Y-m-d')."'
 			";
 			$ErrMsg = _('The Projects could not be loaded because');
 			$DbgMsg = _('The SQL that was used to get the Projects and failed was');
