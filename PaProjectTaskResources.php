@@ -73,6 +73,9 @@ if (isset($_POST['submit'])) {
 	$fulltime=0;
 	}
 
+	$begindate = DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['Begindate']);
+	$enddate = DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['Enddate']);
+
 	$checksql = "SELECT count(*)
 		     FROM paprojecttaskresources
 		     WHERE project_id = '" . $_POST['Project'] . "'AND employee_id = '" . $_POST['Employee'] . "'
@@ -94,8 +97,8 @@ if (isset($_POST['submit'])) {
 			SET project_id = '" . $_POST['Project'] . "',
 employee_id= '" . $_POST['Employee']. "',
 projecttask_id= '" . $_POST['Task']. "',
-resource_begindate= '" . $_POST['Begindate']. "',
-resource_enddate= '" . $_POST['Enddate']. "',
+resource_begindate= '" .$begindate->format('Y-m-d'). "',
+resource_enddate= '" .$enddate->format('Y-m-d'). "',
 
 resource_desc= '" . $_POST['Description']. "',
 resource_fulltime= '" . $fulltime. "',
@@ -137,8 +140,8 @@ resource_status= '" . $_POST['Status']. "'
 					VALUES ('" . $_POST['Project'] . "',
 '" . $_POST['Task'] . "',
 '" . $_POST['Employee'] . "',
-'" . $_POST['Begindate'] . "',
-'" . $_POST['Enddate'] . "',
+'" . $begindate->format('Y-m-d') . "',
+'" . $enddate->format('Y-m-d') . "',
 '" . $_POST['Description'] . "',
 '" . $fulltime . "',
 '" . $_POST['Status'] . "'
@@ -398,15 +401,23 @@ $_POST['status']  = $myrow['resource_status'];
 				echo'<option '._(($_POST['Employee']== $EmpId )? 'selected ' : '').' value="'.$EmpId.'">'.$Row.'</option>';
 					}
 					echo'</select></td>
-			</tr>
-			<tr>
-					<td>' . _('Planned Begin date') . ':</td>
-					<td><input type="text" name="Begindate" required="required" id="datepicker"  class="datepicker" required="required" title="' . _('Planned Begin Date is required') . '"  value="' .$_POST['Begindate'].'""/></td>
+			</tr>';
+
+			if (isset($SelectedName)) {
+				$Begindate= ConvertSQLDate($_POST['Begindate']);
+				$Enddate= ConvertSQLDate($_POST['Enddate']);
+			}else{
+			$Begindate=date($_SESSION['DefaultDateFormat']);
+				$Enddate=date($_SESSION['DefaultDateFormat']);
+			}
+
+			echo'<tr><td>' . _('Planned Begin date') . ':</td>
+					<td><input type="text" name="Begindate" required="required" class="datepicker"  class="datepicker" required="required" title="' . _('Planned Begin Date is required') . '"  value="' .$Begindate.'""/></td>
 				</tr>
 
 				<tr>
 						<td>' . _('Planned End date') . ':</td>
-						<td><input type="text" name="Enddate" required="required" id="datepicker1"  class="datepicker1" required="required" title="' . _('Planned End Date is required') . '"  value="' .$_POST['Enddate'].'""/></td>
+						<td><input type="text" name="Enddate" required="required" class="datepicker"  class="datepicker" required="required" title="' . _('Planned End Date is required') . '"  value="' .$Enddate.'""/></td>
 					</tr>
 
 
@@ -449,27 +460,25 @@ $_POST['status']  = $myrow['resource_status'];
 			<input type="submit" name="submit" value="' . _('Accept') . '" />
 		</div>
 	</div>
-	</form>
+	</form>';
 
-	<script>
-	$( function() {
-		$(".datepicker").datepicker({
-				changeMonth: true,
-				changeYear: true,
-				showButtonPanel: true,
-				dateFormat: "yy-mm-dd"
-		});
+	echo "<script>
+					$( document ).ready(function() {
+							//create date.
+							//get format.
+							var date_format = '".$_SESSION['DefaultDateFormat']."';
+							var new_date_format = date_format.replace('Y', 'yy');
 
-		$(".datepicker1").datepicker({
-				changeMonth: true,
-				changeYear: true,
-				showButtonPanel: true,
-				dateFormat: "yy-mm-dd"
-		});
-	} );
-	</script>
+							$('.datepicker').datepicker({
+									changeMonth: true,
+									changeYear: true,
+									showButtonPanel: true,
+									dateFormat: new_date_format
+							});
+					});
 
-	';
+			</script>";
+
 
 } // end if user wish to delete
 

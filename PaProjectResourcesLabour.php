@@ -96,6 +96,9 @@ if (isset($_POST['submit'])) {
 		$i++;
 	}
 
+$startdate = DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['Startdate']);
+
+
 	if (isset($SelectedName) AND $InputError !=1) {
 
 		$sql = "UPDATE paprojectresourcelabour
@@ -103,7 +106,7 @@ if (isset($_POST['submit'])) {
 employee_id= '" . $_POST['Employee']. "',
 services= '" . $_POST['Service']. "',
 resource_description= '" . $_POST['Description']. "',
-resource_startdate= '" . $_POST['Startdate']. "',
+resource_startdate= '" . $startdate->format('Y-m-d'). "',
 
 labourrate= '" . $labourrate. "',
 resource_expense= '" . $expense. "',
@@ -148,7 +151,7 @@ resource_status= '" . $_POST['Status']. "'
 '" . $_POST['Employee'] . "',
 '" . $_POST['Service'] . "',
 '" . $_POST['Description'] . "',
-'" .FormatDateForSQL($_POST['Startdate']). "',
+'" .$startdate->format('Y-m-d'). "',
 '" . $labourrate . "',
 '" . $expense. "',
 '" . $pricing . "',
@@ -417,11 +420,17 @@ $_POST['status']  = $myrow['resource_status'];
 				<td>' . _(' Description') . ':</td>
 
 <td><textarea  name="Description">'.$_POST['Description'].'</textarea></td>
-			</tr>
+			</tr>';
 
-			<tr>
+			if (isset($SelectedName)) {
+				$StartDate= ConvertSQLDate($_POST['Startdate']);
+			}else{
+			$StartDate=date('Y-m-d');
+			}
+
+			echo'<tr>
 					<td>' . _('Start date') . ':</td>
-					<td><input type="text" name="Startdate" required="required" id="datepicker"  class="datepicker" required="required" title="' . _('The Project Name is required') . '"  value="' .$_POST['Startdate'].'""/></td>
+					<td><input type="text" name="Startdate" required="required" class="datepicker"  class="datepicker" required="required" title="' . _('The Project Name is required') . '"  value="' .$StartDate.'""/></td>
 				</tr>
 
 				<tr>
@@ -467,21 +476,25 @@ AP/PO %') . ':</td>
 			<input type="submit" name="submit" value="' . _('Accept') . '" />
 		</div>
 	</div>
-	</form>
+	</form>';
 
-	<script>
-	$( function() {
-		$(".datepicker").datepicker({
-				changeMonth: true,
-				changeYear: true,
-				showButtonPanel: true,
-				dateFormat: "yy-mm-dd"
-		});
-	} );
-	</script>
+	echo "<script>
+					$( document ).ready(function() {
+							//create date.
+							//get format.
+							var date_format = '".$_SESSION['DefaultDateFormat']."';
+							var new_date_format = date_format.replace('Y', 'yy');
 
+							$('.datepicker').datepicker({
+									changeMonth: true,
+									changeYear: true,
+									showButtonPanel: true,
+									dateFormat: new_date_format
+							});
+					});
 
-	';
+			</script>";
+
 
 } // end if user wish to delete
 
