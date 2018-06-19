@@ -205,13 +205,13 @@ echo '<div style="overflow-x:auto;">';
                       <td>'.ConvertSQLDate($myrow['date_witheld']).'</td>
                       <td>'.ConvertSQLDate($myrow['date_of_certificate']).'</td>
                       <td>'.$myrow['notes'].'</td>';
-                if($myrow['status'] == 0)
+                if(isset($_GET['DebtorNo']))
                 {
                   echo'<td><a href="CustomerWitholdingTax.php?DebtorNo='.$myrow['debtorno'].'&amp;WhtID='. $myrow['id']. '&amp;edit=1">Edit</a>&nbsp;&nbsp;';
                   echo'<a href="CustomerWitholdingTax.php?WhtID='. $myrow['id']. '&amp;delete=1" onclick="return confirm(\'', _('Are you sure you wish to delete this entry?'), '\');">'. _('Delete').'</a></td>';
 
                 }
-                else if($myrow['status'] == 1)
+                else if(!isset($_GET['DebtorNo']))
                 {
                   echo '<td></td>';
                 }

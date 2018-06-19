@@ -8,9 +8,13 @@ SelectCustomer.php
   starting around line 217
 /includes/DefineReceiptClass.php
   added $WitholdingTax variable and add_to_batch function now includes $WitholdingTax;
+  
+CustomerReceipt.php  add payments of customers that include witholding tax.
 
 Tax.php
   added witholding tax links around line 355
 
 SelectSalesOrder.php
-  added datatables support.        
+  added datatables support.
+
+CustomerWitholdingTax.php was added.
