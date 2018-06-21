@@ -1,5 +1,6 @@
 <?php
 
+/* $Id: PO_PDFPurchOrder.php 7751 2017-04-13 16:34:26Z rchacon $*/
 
 include('includes/session.php');
 include('includes/SQL_CommonFunctions.inc');

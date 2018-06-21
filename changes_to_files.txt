@@ -16,6 +16,10 @@ CustomerReceipt.php  add payments of customers that include witholding tax.
 PrintCustTransPotrait.php
     added styling for customer sales invoice potrait
 
+PO_PDFPurchOrder.php
+
+/includes/PO_PDFOrderPageHeader.php     
+
 includes/PDFTransPageHeader.inc
 
 Tax.php
