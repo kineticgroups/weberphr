@@ -653,7 +653,7 @@ if (isset($_POST['CommitBatch'])){
 			$result = DB_query($SQL,$ErrMsg,$DbgMsg,true);
 		} //end if there is some discount
 
-	} //end if there is GL work to be done - ie config is to link to GL	
+	} //end if there is GL work to be done - ie config is to link to GL
 	EnsureGLEntriesBalance(12,$_SESSION['ReceiptBatch' . $identifier]->BatchNo);
 
 	$ErrMsg = _('Cannot commit the changes');
@@ -1055,8 +1055,12 @@ if (isset($_SESSION['ReceiptBatch' . $identifier])){
 	echo '<table width="90%" class="selection">
 		<tr>
 			<th>' . _('Amount') . ' ' . _('Received') . '</th>
-			<th>' . _('Discount') . '</th>' .(($_SESSION['ReceiptBatch' . $identifier]->WitholdingTaxExempted == '0') ? '<th>Witholding</th>' : '') .'
-			<th>' . _('Customer') . '</th>
+			<th>' . _('Discount') . '</th>' ;
+			if($_SESSION['ReceiptBatch' . $identifier]->WitholdingTaxExempted == 0 )
+			{
+				echo '<th>Withholding</th>';
+			}
+			echo '<th>' . _('Customer') . '</th>
 			<th>' . _('GL Code') . '</th>
 			<th>' . _('Narrative') . '</th>
 			<th>' . _('Tag') . '</th>
@@ -1072,8 +1076,12 @@ if (isset($_SESSION['ReceiptBatch' . $identifier])){
 
 		echo '<tr>
 				<td class="number">' . locale_number_format($ReceiptItem->Amount,$_SESSION['ReceiptBatch' . $identifier]->CurrDecimalPlaces) . '</td>
-				<td class="number">' . locale_number_format($ReceiptItem->Discount,$_SESSION['ReceiptBatch' . $identifier]->CurrDecimalPlaces) . '</td>
-				'.(($_SESSION['ReceiptBatch' . $identifier]->WitholdingTaxExempted == '0') ? '<td>'.$ReceiptItem->WitholdingTax.'</td>' : '') .'
+				<td class="number">' . locale_number_format($ReceiptItem->Discount,$_SESSION['ReceiptBatch' . $identifier]->CurrDecimalPlaces) . '</td>';
+				if($_SESSION['ReceiptBatch' . $identifier]->WitholdingTaxExempted == 0 )
+				{
+					echo '<td>'.$ReceiptItem->WitholdingTax.'</td>';
+				}
+				echo '
 				<td>' . stripslashes($ReceiptItem->CustomerName) . '</td>
 				<td>' . $ReceiptItem->GLCode.' - '.$myrow['accountname'] . '</td>
 				<td>' .  stripslashes($ReceiptItem->Narrative) . '</td>
@@ -1264,7 +1272,7 @@ if (((isset($_SESSION['CustomerRecord' . $identifier])
 	$result_wht = DB_query($sql_wht);
 	$row_wht = DB_fetch_array($result_wht);
 	$_SESSION['ReceiptBatch' . $identifier]->WitholdingTaxExempted = $row_wht['witholdingtaxexempted'];
-	if($row_wht['witholdingtaxexempted']==0){
+	if($row_wht['witholdingtaxexempted']==0 && isset($_POST['CustomerID'])){
 		echo '<tr>
 				<td>' . _('Witholding Tax') . ':</td>
 				<td><input  type="text" name="WitholdingTax" maxlength="12" size="13" class="number" value="' . $_POST['WitholdingTax'] . '" /></td>
