@@ -90,7 +90,11 @@ echo '</select> &nbsp;&nbsp'._('To') . ':
 //    }
     if(isset($_POST['GenerateReport'])) {
 
+			$Fromdate=DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['FromDate']);
+			$Todate=DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['ToDate']);
+
 		if($_POST['Report']=='time'){
+
 
     	echo '<table class="selection">
     			<tr>
@@ -104,6 +108,8 @@ echo '</select> &nbsp;&nbsp'._('To') . ':
 <th class="ascending">' . _('Service Offered') . '</th>
 <th class="ascending">' . _('Duration') . '</th>';
 echo'</tr>';
+
+
 
 						$sqlemployeelist= "SELECT
 
@@ -149,8 +155,8 @@ $sumduration=0;
 					Join debtorsmaster ON paprojects.customer=debtorsmaster.debtorno
 					JOIN stockmaster on paprojecttasks.servicetask = stockmaster.stockid
 					WHERE employee_id ='".$myrowemployeelists['employeeid']."'
-          AND patimesheetsinfo.begin_date Between '".date('Y-m-d',strtotime($_POST['FromDate']))."' AND
-					'".date('Y-m-d',strtotime($_POST['ToDate']))."'
+          AND patimesheetsinfo.begin_date Between '".$Fromdate->format('Y-m-d')."' AND
+					'".$Todate->format('Y-m-d')."'
 					";
 					$ErrMsg = _('The employee could not be loaded because');
 					$DbgMsg = _('The SQL that was used to get the employees and failed was');
@@ -261,8 +267,8 @@ while($myrowcustomerlists = DB_fetch_array($resultcustomerlists))
 			JOIN stockmaster on paprojecttasks.servicetask = stockmaster.stockid
 			WHERE employee_id ='".$myrowemployeelists['employeeid']."'
 			AND customer ='".$myrowcustomerlists['debtorno']."'
-			AND patimesheetsinfo.begin_date Between '".date('Y-m-d',strtotime($_POST['FromDate']))."' AND
-			'".date('Y-m-d',strtotime($_POST['ToDate']))."'
+			AND patimesheetsinfo.begin_date Between '".$Fromdate->format('Y-m-d')."' AND
+			'".$Todate->format('Y-m-d')."'
 			";
 			$ErrMsg = _('The employee could not be loaded because');
 			$DbgMsg = _('The SQL that was used to get the employees and failed was');
@@ -392,8 +398,8 @@ echo'<tr><td colspan="7">Grand Total Duration </td><td>'.$grandtotaldurationcust
 				JOIN stockmaster on paprojecttasks.servicetask = stockmaster.stockid
 				WHERE employee_id ='".$myrowemployeelists['employeeid']."'
 				AND paprojects.project_id ='".$myrowprojectlists['project_id']."'
-				AND patimesheetsinfo.begin_date Between '".date('Y-m-d',strtotime($_POST['FromDate']))."' AND
-				'".date('Y-m-d',strtotime($_POST['ToDate']))."'
+				AND patimesheetsinfo.begin_date Between '".$Fromdate->format('Y-m-d')."' AND
+				'".$Todate->format('Y-m-d')."'
 				";
 				$ErrMsg = _('The employee could not be loaded because');
 				$DbgMsg = _('The SQL that was used to get the employees and failed was');
@@ -494,8 +500,8 @@ echo'
 		FROM patimesheetentries
 		Join paprojecttasks ON patimesheetentries.projecttask_id =paprojecttasks.projecttask_id
 		JOIN patimesheetsinfo ON patimesheetentries.timesheetinfo_id=patimesheetsinfo.timesheetsinfo_id
-		Where patimesheetsinfo.begin_date Between '".date('Y-m-d',strtotime($_POST['FromDate']))."' AND
-		'".date('Y-m-d',strtotime($_POST['ToDate']))."'
+		Where patimesheetsinfo.begin_date Between '".$Fromdate->format('Y-m-d')."' AND
+		'".$Todate->format('Y-m-d')."'
 		";
 		$resulttasklists = DB_query($sqltasklists);
 
@@ -534,8 +540,8 @@ echo'
 					JOIN stockmaster on paprojecttasks.servicetask = stockmaster.stockid
 					WHERE employee_id ='".$myrowemployeelists['employeeid']."'
 					AND paprojecttasks.projecttask_id ='".$myrowtasklists['taskid']."'
-					AND patimesheetsinfo.begin_date Between '".date('Y-m-d',strtotime($_POST['FromDate']))."' AND
-					'".date('Y-m-d',strtotime($_POST['ToDate']))."'
+					AND patimesheetsinfo.begin_date Between '".$Fromdate->format('Y-m-d')."' AND
+					'".$Todate->format('Y-m-d')."'
 					";
 					$ErrMsg = _('The employee could not be loaded because');
 					$DbgMsg = _('The SQL that was used to get the employees and failed was');
@@ -655,8 +661,8 @@ echo'
 						JOIN stockmaster on paprojecttasks.servicetask = stockmaster.stockid
 						JOIN hremployees ON patimesheetsinfo.employee_id=hremployees.empid
 						WHERE  paprojects.project_id ='".$myrowprojectlists['project_id']."'
-						AND patimesheetsinfo.begin_date Between '".date('Y-m-d',strtotime($_POST['FromDate']))."' AND
-						'".date('Y-m-d',strtotime($_POST['ToDate']))."'
+						AND patimesheetsinfo.begin_date Between '".$Fromdate->format('Y-m-d')."' AND
+						'".$Todate->format('Y-m-d')."'
 						";
 						$ErrMsg = _('The Project could not be loaded because');
 						$DbgMsg = _('The SQL that was used to get the Projects and failed was');

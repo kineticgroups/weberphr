@@ -423,14 +423,14 @@ $_POST['status']  = $myrow['resource_status'];
 			</tr>';
 
 			if (isset($SelectedName)) {
-				$StartDate= ConvertSQLDate($_POST['Startdate']);
+				$StartDate= $_POST['Startdate'];
 			}else{
 			$StartDate=date('Y-m-d');
 			}
 
 			echo'<tr>
 					<td>' . _('Start date') . ':</td>
-					<td><input type="text" name="Startdate" required="required" class="datepicker"  class="datepicker" required="required" title="' . _('The Project Name is required') . '"  value="' .$StartDate.'""/></td>
+					<td><input type="text" name="Startdate" required="required" class="datepicker"  class="datepicker" required="required" title="' . _('The Project Name is required') . '"  value="' .ConvertSQLDate($StartDate).'""/></td>
 				</tr>
 
 				<tr>
