@@ -251,5 +251,5 @@ $AllLeaveTypes = array();
 
 
   }
-
+include('includes/footer.php');
  ?>

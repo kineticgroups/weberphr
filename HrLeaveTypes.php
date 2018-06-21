@@ -65,7 +65,7 @@ if (isset($_POST['submit'])) {
 		$i++;
 	}
 
-
+$validfrom=DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['ValidFrom']);
 	$checksql = "SELECT count(*)
 		     FROM hremployeeleavetypes
 		     WHERE leavetype_name  = '" . $_POST['LeaveTypeName'] . "'";
@@ -89,7 +89,7 @@ leavetype_status= '" . $_POST['Status']. "',
 carry_forward = '" .$_POST['LeaveBalance']. "',
  	lop_enabled = '" . $_POST['Salarydeduction']. "',
 	max_carry_forward_leaves = '" . $_POST['ForwardLeaves']. "',
-		reset_date  = '" .date('Y-m-d',strtotime($_POST['ValidFrom'])). "'
+		reset_date  = '" .$validfrom->format('Y-m-d'). "'
 
 			WHERE hrleavetype_id = '" .$SelectedName."'";
 
@@ -124,7 +124,7 @@ carry_forward = '" .$_POST['LeaveBalance']. "',
 '" . $_POST['LeaveBalance'] . "',
 '" . $_POST['Salarydeduction'] . "',
 '" . $_POST['ForwardLeaves'] . "',
-'" . date('Y-m-d',strtotime($_POST['ValidFrom'])) . "'
+'" .$validfrom->format('Y-m-d'). "'
 )";
 
 
@@ -387,11 +387,16 @@ type="radio" name="LeaveBalance" value="0"> Discard leave balance
 							</tr>
 						<tr>
 								<td>' . _('Valid From') . ':</td>';
+								if (isset($SelectedName)) {
+									$valid= $_POST['ValidFrom'];
+								}else{
+								$valid=date('Y-m-d');
 
+								}
 
 								echo
 								'
-								<td><input type="text" name="ValidFrom"  required="required" class="datepicker" title="' . _('The Valid From is required') . '" value="'.$_POST['ValidFrom'].'" alt="'.$_SESSION['DefaultDateFormat'].'"/></td>
+								<td><input type="text" name="ValidFrom"  required="required" class="datepicker" title="' . _('The Valid From is required') . '" value="'.ConvertSQLDate($valid).'" /></td>
 							</tr>
 
 
