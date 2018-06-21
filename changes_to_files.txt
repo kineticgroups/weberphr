@@ -8,8 +8,15 @@ SelectCustomer.php
   starting around line 217
 /includes/DefineReceiptClass.php
   added $WitholdingTax variable and add_to_batch function now includes $WitholdingTax;
-  
+
+PrintCustTrans.php
+    added styling for customer sales invoice
 CustomerReceipt.php  add payments of customers that include witholding tax.
+
+PrintCustTransPotrait.php
+    added styling for customer sales invoice potrait
+
+includes/PDFTransPageHeader.inc
 
 Tax.php
   added witholding tax links around line 355
