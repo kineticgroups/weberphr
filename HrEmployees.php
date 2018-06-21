@@ -181,6 +181,11 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
 				$Errors[$i] = 'EmpNetPay';
 				$i++;
 			}
+
+			$dob = DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['EmpDOB']);
+			$joiningdate = DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['EmpJoiningDate']);
+
+
     	if ($InputError !=1){
 
     		if ($_POST['submit']==_('Update')) { /*so its an existing one */
@@ -190,7 +195,7 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
 /* Update employees table first*/
     			$sql = "UPDATE hremployees
     					SET employee_id='" . $_POST['EmpIDname'] . "',
-    						joining_date='" . date('Y-m-d',strtotime($_POST['EmpJoiningDate'])) . "',
+    						joining_date='" .$joiningdate->format('Y-m-d') . "',
     						first_name='" . $_POST['EmpFirstName'] . "',
     						middle_name='" . $_POST['EmpMiddleName'] . "',
     						last_name='" . $_POST['EmpLastName'] . "',
@@ -200,7 +205,7 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
     						resume='" . $_POST['EmpCV'] . "',
     						employee_department='" . $_POST['EmpDepartmentID'] . "',
     						status='" . $_POST['EmpStatus'] . "',
-    						date_of_birth='" . date('Y-m-d',strtotime($_POST['EmpDOB'])) . "',
+    						date_of_birth='" . $dob->format('Y-m-d'). "',
     						marital_status='" . $_POST['MaritalStatus'] . "',
 								father_name='" . $_POST['EmpFirstName'] . "',
     						mother_name='" . $_POST['EmpMotherName'] . "',
@@ -360,7 +365,7 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
     						VALUES (
 									'" . $_POST['EmpIDname'] . "',
 									'".$EmpUsername."',
-									'" . date('Y-m-d',strtotime($_POST['EmpJoiningDate'])) . "',
+									'" . $joiningdate->format('Y-m-d'). "',
 									'" . $_POST['EmpFirstName'] . "',
 									'" . $_POST['EmpMiddleName'] . "',
 									'" . $_POST['EmpLastName'] . "',
@@ -370,7 +375,7 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
     							'" . $_POST['EmpJobTitle'] . "',
     							'" . $_POST['EmpCV'] . "',
     							'" . $_POST['EmpDepartmentID'] . "',
-									'" . date('Y-m-d',strtotime($_POST['EmpDOB'])) . "',
+									'" . $dob->format('Y-m-d') . "',
 									'" . $_POST['MaritalStatus'] . "',
 									'" . $_POST['EmpFatherName'] . "',
 									'" . $_POST['EmpMotherName'] . "',
@@ -725,16 +730,25 @@ echo '<td>' . _('Gender') . ':</td>
 			echo '<option value="' . $myrow['departmentid'] .'">' . $myrow['description'] . '</option>';
 		}
 	}
+
+	if (isset($EmpID)) {
+		$dob= $_POST['EmpDOB'];
+		$joiningdate= $_POST['EmpJoiningDate'];
+	}else{
+	$dob=date('Y-m-d');
+		$joiningdate=date('Y-m-d');
+	}
+
 	echo '</select>
 		<a target="_blank" href="'. $RootPath . '/Departments.php">' . ' ' . _('Add Department') . '</a></td>
 		</tr>
 		<tr>
 			<td>' . _('Date of Birth') . ':</td>
-			<td><input ' . (in_array('EmpDOB',$Errors) ?  'class="inputerror date"' : 'class="datepicker"' ) .'  type="text"  name="EmpDOB" id="datepicker"  maxlength="10" value="' . ConvertSQLDate($_POST['EmpDOB']) . '"  alt="' . $_SESSION['DefaultDateFormat'] . '" /></td>
+			<td><input ' . (in_array('EmpDOB',$Errors) ?  'class="inputerror date"' : 'class="datepicker"' ) .'  type="text"  name="EmpDOB"   maxlength="10" value="' . ConvertSQLDate($dob) . '"   /></td>
 		</tr>
 		<tr>
 			<td>' . _('joining Date') . ':</td>
-			<td><input ' . (in_array('EmpJoiningDate',$Errors) ?  'class="inputerror"' : '' ) .'  type="text" class="datepicker" id="datepicker2" name="EmpJoiningDate" maxlength="10" value="' . ConvertSQLDate($_POST['EmpJoiningDate']) . '" alt="'.$_SESSION['DefaultDateFormat'].'" /></td>
+			<td><input ' . (in_array('EmpJoiningDate',$Errors) ?  'class="inputerror"' : '' ) .'  type="text" class="datepicker" name="EmpJoiningDate" maxlength="10" value="' . ConvertSQLDate($joiningdate) . '"  /></td>
 		</tr>
 		<tr>';
 	echo '<tr>

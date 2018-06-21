@@ -118,7 +118,6 @@ if (DB_Num_Rows($leavefetch)>0){
 	{
 		$olddays =$interval->format('%a');
 	}
-	echo $olddays;
 	 $nodays =$nodays+$olddays;
 	}
 
@@ -149,6 +148,7 @@ $newinterval = date_diff($newleaveenddate, $newleavestartdate);
 	}
 $newdays=$newstartday+$nodays;
 
+
 if($_POST['LeaveDuration']=="single" OR $_POST['LeaveDuration']=="half"){
 if($_POST['StartDate']!=$_POST['EndDate']){
 $InputError = 1;
@@ -165,11 +165,12 @@ $i++;
 		     WHERE hrleavetype_id  = '" . $_POST['LeaveType'] . "'";
 	$checkresult=DB_query($checksql);
 	$checkrow=DB_fetch_array($checkresult);
+	prnMsg(_($checkrow['leavetype_name'].' Applied Days  '.$newstartday.' , Remaining days ['.($checkrow['leavetype_leavecount']- $nodays).'] for this Year.'),'info');
 
 	if ($checkrow['leavetype_leavecount'] < $newdays) {
 		$InputError = 1;
 		echo '<br />';
-		prnMsg(_(' You will exceed your '.$checkrow['leavetype_name'].' - Leave Count Days [ '.$checkrow['leavetype_leavecount'].'] for this Year '),'error');
+		prnMsg(_(' You will exceed your '.$checkrow['leavetype_name'].' - Leave Count Days [ '.$checkrow['leavetype_leavecount'].'] for this Year.'),'error');
 		$Errors[$i] = 'LeaveType';
 		$i++;
 	}
