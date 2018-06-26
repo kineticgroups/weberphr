@@ -107,6 +107,7 @@ if (isset($_POST['submit'])) {
 	$enddate = DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['Enddate']);
 
 
+
 	$checksql = "SELECT count(*)
 		     FROM paprojecttasks
 		     WHERE projecttask_name = '" . $_POST['TaskName'] . "'";

@@ -158,9 +158,95 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
     			$DbgMsg = _('The SQL that was used to add the project failed was');
     			$result = DB_query($sql, $ErrMsg, $DbgMsg);
 
+					$sql_company_details = DB_query("SELECT currencydefault, payrollact FROM companies");
+					$result_company_details = DB_fetch_array($sql_company_details);
+					$default_currency = $result_company_details['currencydefault'];
+
+
+					$sqlcustomer = "INSERT INTO debtorsmaster (
+									debtorno,
+									name,
+									address1,
+									currcode,
+									clientsince,
+									holdreason,
+									paymentterms,
+									discount,
+
+									pymtdiscount,
+									creditlimit,
+									salestype,
+									invaddrbranch,
+									customerpoline,
+									typeid,
+									language_id ,
+ 	                 isproject
+								)
+						VALUES ('" .mb_strtoupper( $_POST['ProjectID'])."',
+								'" . $_POST['ProjectName'] ."',
+								'" . $_POST['ProjectLocation'] ."',
+								'" . $default_currency . "',
+								'" . date('Y-m-d') . "',
+								'1',
+								'20',
+								'" . filter_number_format(0)/100 . "',
+
+								'" . filter_number_format(0)/100 . "',
+								'" . filter_number_format($_SESSION['DefaultCreditLimit']) . "',
+								'" . $_SESSION['DefaultPriceList'] . "',
+								'0',
+
+								'0',
+								'" . $_SESSION['DefaultCustomerType'] . "',
+								'" . $_SESSION['Language'] . "',
+								'1')";
+
+					$ErrMsg = _('This customer could not be added because');
+					$resultcustomer = DB_query($sqlcustomer,$ErrMsg);
+
+					$SQLbrcustomer = "INSERT INTO custbranch (branchcode,
+									debtorno,
+									brname,
+
+									estdeliverydays,
+									fwddate,
+									salesman,
+
+									contactname,
+									area,
+									taxgroupid,
+									defaultlocation,
+									disabletrans,
+
+
+									deliverblind)
+							VALUES ('" . mb_strtoupper($_POST['ProjectID']) . "',
+								'" .$_POST['ProjectID'] . "',
+								'" . $_POST['ProjectName']  . "',
+
+								'" . filter_number_format(0) . "',
+								'0',
+								'DE',
+
+								'" .$_POST['ProjectName'] . "',
+								'DE',
+
+								'1',
+								'" . $_POST['ProjectLocation'] . "',
+								'0',
+
+
+								'1')";
+
+$resultbrcustomer = DB_query($SQLbrcustomer);
+
+
+
           if (DB_error_no() ==0) {
     				//$NewEmpID = DB_Last_Insert_ID($db,'hremployees', 'empid');
     				prnMsg( _('The new project has been added to the database  :'),'success');
+						prnMsg( _('Customer '.$_POST['ProjectID'].'  has been created  :'),'success');
+
     				unset($_POST['ProjectName']);
 						unset($_POST['ProjectCategory']);
 						unset($_POST['ProjectType']);

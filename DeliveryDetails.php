@@ -1187,6 +1187,8 @@ echo'	<tr>
 			echo '<option selected="selected" value="0">' . _('No') . '</option>';
 		}
 		echo '</select></td></tr>';
+
+
 	}//end if it is NOT a CustomerLogin
 
 echo '</table>';

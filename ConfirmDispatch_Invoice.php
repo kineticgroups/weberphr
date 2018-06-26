@@ -16,7 +16,11 @@ include('includes/header.php');
 include('includes/SQL_CommonFunctions.inc');
 include('includes/FreightCalculation.inc');
 include('includes/GetSalesTransGLCodes.inc');
+if (isset($Errors)) {
+	unset($Errors);
+}
 
+$Errors = array();
 
 if(empty($_GET['identifier'])) {
 	/*unique session identifier to ensure that there is no conflict with other order entry sessions on the same machine  */
@@ -836,8 +840,17 @@ invoices can have a zero amount but there must be a quantity to invoice */
 	$ErrMsg = _('CRITICAL ERROR') . ' ' . _('NOTE DOWN THIS ERROR AND SEEK ASSISTANCE') . ': ' . _('The sales order header could not be updated with the invoice number');
 	$DbgMsg = _('The following SQL to update the sales order was used');
 	$Result = DB_query($SQL,$ErrMsg,$DbgMsg,true);
-
+	$InputError = 0;
+		$i=1;
 /*Now insert the DebtorTrans */
+if($_POST['Resource']==""){
+
+	$InputError = 1;
+	echo '<br />';
+	prnMsg(_('Select a Project Resource First'),'error');
+	$Errors[$i] = 'Resource';
+	$i++;
+}
 
 	$SQL = "INSERT INTO debtortrans (transno,
 									type,
@@ -857,7 +870,9 @@ invoices can have a zero amount but there must be a quantity to invoice */
 									shipvia,
 									consignment,
 									packages,
-									salesperson )
+									salesperson,
+projecttaskresource_id
+								 )
 								VALUES (
 									'". $InvoiceNo . "',
 									10,
@@ -877,7 +892,9 @@ invoices can have a zero amount but there must be a quantity to invoice */
 									'" . $_SESSION['Items'.$identifier]->ShipVia . "',
 									'" . $_POST['Consignment'] . "',
 									'" . $_POST['Packages'] . "',
-									'" . $_SESSION['Items'.$identifier]->SalesPerson . "' )";
+									'" . $_SESSION['Items'.$identifier]->SalesPerson . "',
+									'" . $_POST['Resource'] . "'
+									 )";
 
 	$ErrMsg =_('CRITICAL ERROR') . '! ' . _('NOTE DOWN THIS ERROR AND SEEK ASSISTANCE') . ': ' . _('The debtor transaction record could not be inserted because');
 	$DbgMsg = _('The following SQL to insert the debtor transaction record was used');
@@ -1776,6 +1793,11 @@ invoices can have a zero amount but there must be a quantity to invoice */
 	if(!isset($_POST['InvoiceText'])) {
 		$_POST['InvoiceText']='';
 	}
+
+	if(!isset($_POST['Resource'])) {
+		$_POST['Resource']='';
+	}
+
 	$j++;
 	echo '<table class="selection">
 		<tr>
@@ -1814,6 +1836,45 @@ invoices can have a zero amount but there must be a quantity to invoice */
 			<td>' . _('Internal Comments') . ':</td>
 			<td><textarea tabindex="' . $j . '" name="InternalComments" pattern=".{0,20}" cols="31" rows="5">' . reverse_escape($_SESSION['Items'.$identifier]->InternalComments) . '</textarea></td>
 		</tr>';
+
+$sqlcustomer = "SELECT
+				isproject
+		FROM debtorsmaster
+		WHERE debtorno = '" .  $_SESSION['Items'.$identifier]->DebtorNo . "'";
+		$resultcustomer = DB_query($sqlcustomer);
+		$myrowcustomer = DB_fetch_array($resultcustomer);
+
+
+
+	if ($myrowcustomer['isproject']==1){
+		++$j;
+		echo '<tr><td>' .  _('Project Task Resource') .':</td>
+				<td><select name="Resource" tabindex="' . $j . '" required="required">';
+echo'<option value="" > Select Project Task Resource</option>';
+				$sqlresources = "SELECT
+							projecttaskresource_id,
+							project_name,
+							first_name,
+							middle_name,
+							last_name,
+							projecttask_name
+						FROM paprojecttaskresources
+						JOIN hremployees on paprojecttaskresources.employee_id = hremployees.empid
+						JOIN paprojects on paprojecttaskresources.project_id = paprojects.id
+						JOIN paprojecttasks on paprojecttaskresources.projecttask_id = paprojecttasks.projecttask_id
+						WHERE paprojects.project_id = '" .  $_SESSION['Items'.$identifier]->DebtorNo . "'";
+						$resultresources = DB_query($sqlresources );
+echo $_SESSION['Items'.$identifier]->DebtorNo;
+				while ($myrowresources=DB_fetch_array($resultresources)) {
+
+						echo '<option '._(($_POST['Resource'] == $myrowresources['projecttaskresource_id']) ? ' selected="selected"' :'').'selected="selected" value="' . $myrowresources['projecttaskresource_id'] . '">' . $myrowresources['project_name'] . '</option>';
+
+				}
+
+		echo '</select></td></tr>';
+}else{
+echo'<input type="hidden" value="0" name="Resource">';
+}
 
 	$j++;
 	echo '</table>

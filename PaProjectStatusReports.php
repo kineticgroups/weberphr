@@ -133,6 +133,7 @@ $sumduration=0;
 					echo'<tr>	<td colspan="6"><b>'.$myrowstatuslist ['project_status_name'].'</b></td></tr>';
 
 					$sqltime= "SELECT
+					id,
 					project_id ,
 					project_name ,
 					project_category,
@@ -159,7 +160,46 @@ $sumduration=0;
 
 					while($myrowtime = DB_fetch_array($resulttime))
 					{
-	$totalduration=$myrowtime['sun']+$myrowtime['mon']+$myrowtime['tue']+$myrowtime['wed']+$myrowtime['thu']+$myrowtime['fri']+$myrowtime['sat'];
+
+$sqlplannedtime=
+"SELECT
+	plannedduration
+ FROM paprojecttasks
+				WHERE project_id='".$myrowtime['id']."'
+	AND planbegindate  Between '".$Fromdate->format('Y-m-d')."' AND
+				'".$Todate->format('Y-m-d')."'
+
+				";
+$plannedtime=0;
+		$resultplannedtime = DB_query($sqlplannedtime);
+		while ($myrowplannedtime = DB_fetch_array($resultplannedtime)) {
+			$plannedtime=$plannedtime + $myrowplannedtime['plannedduration'];
+		}
+
+		$sqlapprovedtime= "SELECT
+		 sun,
+		 mon,
+		 tue,
+		 wed,
+		 thu,
+		 fri,
+		 sat,
+timesheet_status
+		FROM patimesheetentries
+		JOIN patimesheetsinfo on patimesheetentries.timesheetinfo_id = patimesheetsinfo.timesheetsinfo_id
+		Where project_id='".$myrowtime['id']."'
+		AND timesheet_status='1'
+		AND patimesheetsinfo.begin_date  Between '".$Fromdate->format('Y-m-d')."' AND
+		'".$Todate->format('Y-m-d')."'
+		";
+		$approvedtime=0;
+				$resultapprovedtime = DB_query($sqlapprovedtime);
+				while ($myrowapprovedtime = DB_fetch_array($resultapprovedtime)) {
+
+			$totalduration=$myrowapprovedtime['sun']+$myrowapprovedtime['mon']+$myrowapprovedtime['tue']+$myrowapprovedtime['wed']+$myrowapprovedtime['thu']+$myrowapprovedtime['fri']+$myrowapprovedtime['sat'];
+					$approvedtime=$approvedtime + $totalduration;
+				}
+
 echo'<tr><td></td>
 
 <td>'.$myrowtime['project_id'].'</td>
@@ -168,10 +208,10 @@ echo'<tr><td></td>
 <td>'.$myrowtime['first_name'].' '.$myrowtime['middle_name'].' '.$myrowtime['last_name'].'</td>
 <td>'.$myrowtime['project_status_name'].'</td>
 <td>'.$myrowtime['project_type_name'].'</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td>'.$approvedtime.'</td>
+<td>'.$plannedtime.'</td>
+<td>'.($plannedtime-$approvedtime).'</td>
+<td>'.((($approvedtime)/$plannedtime)*100).'</td>
 <td></td>
 </tr>';
 					}
@@ -206,6 +246,7 @@ echo'</tr>';
 			echo'<tr>	<td colspan="6"><b>'.$myrowstatuslist ['project_status_name'].'</b></td></tr>';
 
 			$sqltime= "SELECT
+			id,
 			project_id ,
 			project_name ,
 			project_category,
@@ -232,7 +273,48 @@ echo'</tr>';
 
 			while($myrowtime = DB_fetch_array($resulttime))
 			{
-$totalduration=$myrowtime['sun']+$myrowtime['mon']+$myrowtime['tue']+$myrowtime['wed']+$myrowtime['thu']+$myrowtime['fri']+$myrowtime['sat'];
+
+				$sqlplannedtime=
+				"SELECT
+					plannedduration
+				 FROM paprojecttasks
+								WHERE project_id='".$myrowtime['id']."'
+					AND planbegindate  Between '".$Fromdate->format('Y-m-d')."' AND
+								'".$Todate->format('Y-m-d')."'
+
+								";
+				$plannedtime=0;
+						$resultplannedtime = DB_query($sqlplannedtime);
+						while ($myrowplannedtime = DB_fetch_array($resultplannedtime)) {
+							$plannedtime=$plannedtime + $myrowplannedtime['plannedduration'];
+						}
+
+						$sqlapprovedtime= "SELECT
+						 sun,
+						 mon,
+						 tue,
+						 wed,
+						 thu,
+						 fri,
+						 sat,
+				timesheet_status
+						FROM patimesheetentries
+						JOIN patimesheetsinfo on patimesheetentries.timesheetinfo_id = patimesheetsinfo.timesheetsinfo_id
+						Where project_id='".$myrowtime['id']."'
+						AND timesheet_status='1'
+						AND created_date  Between '".$Fromdate->format('Y-m-d')."' AND
+						'".$Todate->format('Y-m-d')."'
+						";
+						$approvedtime=0;
+								$resultapprovedtime = DB_query($sqlapprovedtime);
+								while ($myrowapprovedtime = DB_fetch_array($resultapprovedtime)) {
+
+							$totalduration=$myrowapprovedtime['sun']+$myrowapprovedtime['mon']+$myrowapprovedtime['tue']+$myrowapprovedtime['wed']+$myrowapprovedtime['thu']+$myrowapprovedtime['fri']+$myrowapprovedtime['sat'];
+									$approvedtime=$approvedtime + $totalduration;
+								}
+
+
+
 echo'<tr><td></td>
 
 <td>'.$myrowtime['project_id'].'</td>
@@ -241,10 +323,10 @@ echo'<tr><td></td>
 <td>'.$myrowtime['first_name'].' '.$myrowtime['middle_name'].' '.$myrowtime['last_name'].'</td>
 <td>'.$myrowtime['project_status_name'].'</td>
 <td>'.$myrowtime['project_type_name'].'</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td>'.$approvedtime.'</td>
+<td>'.$plannedtime.'</td>
+<td>'.($plannedtime-$approvedtime).'</td>
+<td>'.((($approvedtime)/$plannedtime)*100).'</td>
 <td></td>
 </tr>';
 			}
