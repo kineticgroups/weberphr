@@ -362,18 +362,31 @@ if(isset($PrintPDF)
 							serialno
 						FROM stockserialmoves
 						WHERE stockmoveno='" . $myrow2['stkmoveno'] . "'");
-
+						$serial_numbers_array = array();
 					if($myrow2['serialised']==1) {
 						while($ControlledMovtRow = DB_fetch_array($GetControlMovts)) {
-							$YPos -= (10*$lines);
-							$LeftOvers = $pdf->addTextWrap($Left_Margin+82,$YPos,100,$FontSize,$ControlledMovtRow['serialno'],'left');
-							if($YPos-$line_height <= $Bottom_Margin) {
-								/* head up a new invoice/credit note page */
-								/*draw the vertical column lines right to the bottom */
-								PrintLinesToBottom ();
-								include ('includes/PDFTransPageHeaderPortrait.inc');
-							} //end if need a new page headed up
+							$serial_numbers_array[] = $ControlledMovtRow['serialno'];
+
 						}
+						for($key=0;$key<count($serial_numbers_array);$key++) {
+								$YPos -= (10*$lines);
+								$serial1 = $serial_numbers_array[$key].",";
+								$serial2 = '';
+								if(array_key_exists($key+1,$serial_numbers_array))
+								{
+									$serial2 = $serial_numbers_array[$key+1].",";
+									$key++;
+								}
+
+								$this_line = $serial1.$serial2;
+								$LeftOvers = $pdf->addTextWrap($Left_Margin+82,$YPos,300,$FontSize,$this_line,'left');
+								if($YPos-$line_height <= $Bottom_Margin) {
+									/* head up a new invoice/credit note page */
+									/*draw the vertical column lines right to the bottom */
+									PrintLinesToBottom ();
+									include ('includes/PDFTransPageHeaderPortrait.inc');
+								} //end if need a new page headed up
+							}
 					} else {
 						while($ControlledMovtRow = DB_fetch_array($GetControlMovts)) {
 							$YPos -= (10*$lines);

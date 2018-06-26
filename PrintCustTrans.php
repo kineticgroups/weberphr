@@ -241,7 +241,10 @@ if (isset($PrintPDF) AND isset($FromTransNo) AND isset($InvOrCredit)){
 								((1 - stockmoves.discountpercent) * stockmoves.price * " . $ExchRate . "* -stockmoves.qty) AS fxnet,
 								(stockmoves.price * " . $ExchRate . ") AS fxprice,
 								stockmoves.narrative,
+								stockmaster.controlled,
+								stockmaster.serialised,
 								stockmaster.units,
+								stockmoves.stkmoveno,
 								stockmaster.decimalplaces
 							FROM stockmoves INNER JOIN stockmaster
 							ON stockmoves.stockid = stockmaster.stockid
@@ -257,7 +260,10 @@ if (isset($PrintPDF) AND isset($FromTransNo) AND isset($InvOrCredit)){
 								((1 - stockmoves.discountpercent) * stockmoves.price * " . $ExchRate . " * stockmoves.qty) AS fxnet,
 								(stockmoves.price * " . $ExchRate . ") AS fxprice,
 								stockmoves.narrative,
+								stockmaster.controlled,
+								stockmaster.serialised,
 								stockmaster.units,
+								stockmoves.stkmoveno,
 								stockmaster.decimalplaces
 							FROM stockmoves INNER JOIN stockmaster
 							ON stockmoves.stockid = stockmaster.stockid
@@ -309,11 +315,68 @@ if (isset($PrintPDF) AND isset($FromTransNo) AND isset($InvOrCredit)){
 					} else {
 						$LeftOvers = $pdf->addTextWrap($Left_Margin+100,$YPos,251,$FontSize,$myrow2['description']);
 					}
+					$lines=1;
+					while($LeftOvers!='') {
+						$LeftOvers = $pdf->addTextWrap($Left_Margin+80,$YPos-(10*$lines),186,$FontSize,$LeftOvers);
+						$lines++;
+					}
 					$LeftOvers = $pdf->addTextWrap($Left_Margin+353,$YPos,96,$FontSize,$DisplayPrice,'right');
 					$LeftOvers = $pdf->addTextWrap($Left_Margin+453,$YPos,95,$FontSize,$DisplayQty,'right');
 					$LeftOvers = $pdf->addTextWrap($Left_Margin+553,$YPos,35,$FontSize,$myrow2['units'],'centre');
 					$LeftOvers = $pdf->addTextWrap($Left_Margin+590,$YPos,50,$FontSize,$DisplayDiscount,'right');
 					$LeftOvers = $pdf->addTextWrap($Left_Margin+642,$YPos,120,$FontSize,$DisplayNet,'right');
+
+					if($myrow2['controlled']==1) {
+
+						$GetControlMovts = DB_query("
+							SELECT
+								moveqty,
+								serialno
+							FROM stockserialmoves
+							WHERE stockmoveno='" . $myrow2['stkmoveno'] . "'");
+							$serial_numbers_array = array();
+						if($myrow2['serialised']==1) {
+							while($ControlledMovtRow = DB_fetch_array($GetControlMovts)) {
+								$serial_numbers_array[] = $ControlledMovtRow['serialno'];
+
+							}
+							for($key=0;$key<count($serial_numbers_array);$key++) {
+								$YPos -= (10*$lines);
+								$serial1 = $serial_numbers_array[$key].",";
+								$serial2 = '';
+								$serial3 = '';
+								if(array_key_exists($key+1,$serial_numbers_array))
+								{
+									$serial2 = $serial_numbers_array[$key+1].",";
+									$key++;
+								}
+								if(array_key_exists($key+2,$serial_numbers_array))
+								{
+									$serial3 = $serial_numbers_array[$key+2].",";
+									$key++;
+								}
+								$this_line = $serial1.$serial2.$serial3;
+								$LeftOvers = $pdf->addTextWrap($Left_Margin+100,$YPos,500,$FontSize,$this_line,'left');
+								if($YPos-$line_height <= $Bottom_Margin) {
+									/* head up a new invoice/credit note page */
+									/*draw the vertical column lines right to the bottom */
+									PrintLinesToBottom ();
+									include ('includes/PDFTransPageHeaderPortrait.inc');
+								} //end if need a new page headed up
+							}
+						} else {
+							while($ControlledMovtRow = DB_fetch_array($GetControlMovts)) {
+								$YPos -= (10*$lines);
+								$LeftOvers = $pdf->addTextWrap($Left_Margin+82,$YPos,100,$FontSize,(-$ControlledMovtRow['moveqty']) . ' x ' . $ControlledMovtRow['serialno'], 'left');
+								if($YPos-$line_height <= $Bottom_Margin) {
+									/* head up a new invoice/credit note page */
+									/*draw the vertical column lines right to the bottom */
+									PrintLinesToBottom ();
+									include ('includes/PDFTransPageHeaderPortrait.inc');
+								} //end if need a new page headed up
+							}
+						}
+					}
 
 					$YPos -= ($line_height);
 
