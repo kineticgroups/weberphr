@@ -87,6 +87,7 @@ if (isset($OrderNo) AND $OrderNo != '' AND $OrderNo > 0 AND $OrderNo != 'Preview
 					purchorders.comments,
 					purchorders.orddate,
 					purchorders.rate,
+					purchorders.contact,
 					purchorders.dateprinted,
 					purchorders.deladd1,
 					purchorders.deladd2,

@@ -31,8 +31,19 @@ $pdf->addText($FormDesign->CompanyEmail->x,$Page_Height - $FormDesign->CompanyEm
 
 $pdf->RoundRectangleFill($FormDesign->DeliveryAddressBox->x, $Page_Height - $FormDesign->DeliveryAddressBox->y,$FormDesign->DeliveryAddressBox->width, $FormDesign->DeliveryAddressBox->height, $FormDesign->DeliveryAddressBox->radius,$FormDesign->DeliveryAddressBox->radius,'1111','DF',"",  array(220, 220, 220));// Function RoundRectangle from includes/class.pdf.php
 $pdf->RoundRectangleFill($FormDesign->DeliveryAddressBox2->x, $Page_Height - $FormDesign->DeliveryAddressBox2->y,$FormDesign->DeliveryAddressBox2->width, $FormDesign->DeliveryAddressBox2->height, $FormDesign->DeliveryAddressBox2->radius,$FormDesign->DeliveryAddressBox2->radius,'1111','DF',"",  array(255, 255, 255));
+
+/*Now the Supplier details */
+$pdf->addText($FormDesign->SupplierAddress->Caption->x,$Page_Height - $FormDesign->SupplierAddress->Caption->y, $FormDesign->SupplierAddress->Caption->FontSize, _('Supplier') . ':' );
+$pdf->addText($FormDesign->SupplierAddress->Line0->x,$Page_Height - $FormDesign->SupplierAddress->Line0->y, $FormDesign->SupplierAddress->Line0->FontSize, $POHeader['suppname']);
+$pdf->addText($FormDesign->SupplierAddress->Line1->x,$Page_Height - $FormDesign->SupplierAddress->Line1->y, $FormDesign->SupplierAddress->Line1->FontSize, $POHeader['address1']);
+$pdf->addText($FormDesign->SupplierAddress->Line2->x,$Page_Height - $FormDesign->SupplierAddress->Line2->y, $FormDesign->SupplierAddress->Line2->FontSize, $POHeader['address2']);
+$pdf->addText($FormDesign->SupplierAddress->Line3->x,$Page_Height - $FormDesign->SupplierAddress->Line3->y, $FormDesign->SupplierAddress->Line3->FontSize, $POHeader['address3']);
+$pdf->addText($FormDesign->SupplierAddress->Line4->x,$Page_Height - $FormDesign->SupplierAddress->Line4->y, $FormDesign->SupplierAddress->Line4->FontSize, $POHeader['address4']);
+$pdf->addText($FormDesign->SupplierAddress->Line5->x,$Page_Height - $FormDesign->SupplierAddress->Line5->y, $FormDesign->SupplierAddress->Line5->FontSize, $POHeader['address5'] . ' ' . $POHeader['address6']);	// Includes supplier postal code and country.
+
 /*Now the delivery details */
 $pdf->addText($FormDesign->DeliveryAddress->Caption->x,$Page_Height - $FormDesign->DeliveryAddress->Caption->y, $FormDesign->DeliveryAddress->Caption->FontSize, _('Deliver To') . ':' );
+$pdf->addText($FormDesign->DeliveryAddress->Line0->x,$Page_Height - $FormDesign->DeliveryAddress->Line0->y, $FormDesign->DeliveryAddress->Line0->FontSize, $POHeader['contact']);
 $pdf->addText($FormDesign->DeliveryAddress->Line1->x,$Page_Height - $FormDesign->DeliveryAddress->Line1->y, $FormDesign->DeliveryAddress->Line1->FontSize, $POHeader['deladd1']);
 $pdf->addText($FormDesign->DeliveryAddress->Line2->x,$Page_Height - $FormDesign->DeliveryAddress->Line2->y, $FormDesign->DeliveryAddress->Line2->FontSize, $POHeader['deladd2']);
 $pdf->addText($FormDesign->DeliveryAddress->Line3->x,$Page_Height - $FormDesign->DeliveryAddress->Line3->y, $FormDesign->DeliveryAddress->Line3->FontSize, $POHeader['deladd3']);
@@ -41,14 +52,7 @@ $pdf->addText($FormDesign->DeliveryAddress->Line5->x,$Page_Height - $FormDesign-
 /*draw a nice curved corner box around the delivery to address */
 //$pdf->SetLineStyle(array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 255)));
 //$pdf->RoundedRect(140, 255, 40, 30, 8.0, '1111', 'DF', $style6, array(200, 200, 200));
-/*Now the Supplier details */
-$pdf->addText($FormDesign->SupplierAddress->Caption->x,$Page_Height - $FormDesign->SupplierAddress->Caption->y, $FormDesign->SupplierAddress->Caption->FontSize, _('Supplier') . ':' );
-$pdf->addText($FormDesign->SupplierName->x+30,$Page_Height - $FormDesign->SupplierName->y, $FormDesign->SupplierName->FontSize, $POHeader['suppname']);
-$pdf->addText($FormDesign->SupplierAddress->Line1->x,$Page_Height - $FormDesign->SupplierAddress->Line1->y, $FormDesign->SupplierAddress->Line1->FontSize, $POHeader['address1']);
-$pdf->addText($FormDesign->SupplierAddress->Line2->x,$Page_Height - $FormDesign->SupplierAddress->Line2->y, $FormDesign->SupplierAddress->Line2->FontSize, $POHeader['address2']);
-$pdf->addText($FormDesign->SupplierAddress->Line3->x,$Page_Height - $FormDesign->SupplierAddress->Line3->y, $FormDesign->SupplierAddress->Line3->FontSize, $POHeader['address3']);
-$pdf->addText($FormDesign->SupplierAddress->Line4->x,$Page_Height - $FormDesign->SupplierAddress->Line4->y, $FormDesign->SupplierAddress->Line4->FontSize, $POHeader['address4']);
-$pdf->addText($FormDesign->SupplierAddress->Line5->x,$Page_Height - $FormDesign->SupplierAddress->Line5->y, $FormDesign->SupplierAddress->Line5->FontSize, $POHeader['address5'] . ' ' . $POHeader['address6']);	// Includes supplier postal code and country.
+
 /*Now the Requisition Number */
 $pdf->addText($FormDesign->RequisitionNumber->x,$Page_Height - $FormDesign->RequisitionNumber->y, $FormDesign->RequisitionNumber->FontSize, _('Requisition Number') . ':' );
 $pdf->addText($FormDesign->RequisitionNumber->x+120,$Page_Height - $FormDesign->RequisitionNumber->y, $FormDesign->RequisitionNumber->FontSize, $POHeader['requisitionno']);
