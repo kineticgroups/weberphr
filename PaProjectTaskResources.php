@@ -407,8 +407,8 @@ $_POST['status']  = $myrow['resource_status'];
 				$Begindate= $_POST['Begindate'];
 				$Enddate= $_POST['Enddate'];
 			}else{
-			$Begindate=date($_SESSION['DefaultDateFormat']);
-				$Enddate=date($_SESSION['DefaultDateFormat']);
+			$Begindate=date('Y-m-d');
+				$Enddate=date('Y-m-d');
 			}
 
 			echo'<tr><td>' . _('Planned Begin date') . ':</td>

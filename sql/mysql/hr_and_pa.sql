@@ -692,3 +692,6 @@ INSERT INTO  `scripts` values('HrGenerateEstimatedSalary.php','22', 'Salary Esti
 
 
 INSERT INTO  `scripts` values('HrMyLeave.php','20', 'View Employee Leaves  ');
+
+ALTER TABLE `debtorsmaster` ADD `isproject` TINYINT NOT NULL DEFAULT '0' AFTER `language_id`;
+ALTER TABLE `debtortrans` ADD `projecttaskresource_id` INT NOT NULL DEFAULT '0' AFTER `salesperson`;

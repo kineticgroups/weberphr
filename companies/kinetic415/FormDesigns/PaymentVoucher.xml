@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form name="Payment Voucher">
+	<PaperSize name="Paper size">A4_Landscape</PaperSize>
+	<LineHeight name="Line height">16</LineHeight>
+	<logo type="image" name="Logo" id="Logo">
+		<x>-5</x>
+		<y>124</y>
+		<width>0</width>
+		<height>120</height>
+	</logo>
+	<PaymentVoucherHeading type="SimpleText" name="PaymentVoucher Heading" id="PaymentVoucherHeading">
+		<FontSize>15</FontSize>
+		<x>391</x>
+		<y>46</y>
+	</PaymentVoucherHeading>
+	<VoucherNumber type="SimpleText" name="VoucherNumber" id="VoucherNumber">
+		<FontSize>15</FontSize>
+		<x>391</x>
+		<y>60</y>
+	</VoucherNumber>
+	<PaymentDate type="SimpleText" name="Payment Date" id="PaymentDate">
+			<FontSize>12</FontSize>
+			<x>40</x>
+			<y>250</y>
+	</PaymentDate>
+	<MethodOfPayment type="SimpleText" name="MethodOfPayment" id="MethodOfPayment">
+			<FontSize>12</FontSize>
+			<x>40</x>
+			<y>270</y>
+	</MethodOfPayment>
+	<Amount type="SimpleText" name="Amount" id="Amount">
+			<FontSize>12</FontSize>
+			<x>40</x>
+			<y>350</y>
+	</Amount>
+	<Cash type="SimpleText" name="Cash" id="Cash">
+			<FontSize>12</FontSize>
+			<x>40</x>
+			<y>370</y>
+	</Cash>
+	<ChequeNumber type="SimpleText" name="Amount" id="Amount">
+			<FontSize>12</FontSize>
+			<x>40</x>
+			<y>370</y>
+	</ChequeNumber>
+	<ViewingOnly type="SimpleText" name="Viewing only warning text" id="ViewingOnly">
+		<FontSize>16</FontSize>
+		<x>391</x>
+		<y>62</y>
+	</ViewingOnly>
+	<PageNumber type="SimpleText" name="Page number" id="PageNumber">
+		<FontSize>10</FontSize>
+		<x>762</x>
+		<y>30</y>
+	</PageNumber>
+	<CompanyName type="SimpleText" name="Company name" id="CompanyName">
+		<FontSize>10</FontSize>
+		<x>40</x>
+		<y>112</y>
+	</CompanyName>
+	<SupplierInfo type="SimpleText" name="Supplier Info" id="SupplierInfo">
+		<FontSize>10</FontSize>
+		<x>40</x>
+		<y>280</y>
+	</SupplierInfo>
+
+	<Description type="MultiLineText" name="Description" id="Description">
+		<FontSize>14</FontSize>
+		<x>256</x>
+		<y>549</y>
+		<Length>125</Length>
+	</Description>
+
+	<Totals type="ElementArray" name="Order total caption" id="OrderTotalCaption">
+		<y type="StartLine" name="Y co-ordinate of first data line" id="DataStartLine">362</y>
+		<Column1 type="SimpleText" name="Column 1" id="Totals1">
+			<FontSize>10</FontSize>
+			<x>41</x>
+			<y>430</y>
+			<Length>94</Length>
+		</Column1>
+		<Column2 type="SimpleText" name="Column 2" id="Totals2">
+			<FontSize>10</FontSize>
+			<x>136</x>
+			<y>430</y>
+			<Length>90</Length>
+		</Column2>
+		<Column3 type="SimpleText" name="Column 3" id="Totals3">
+			<FontSize>10</FontSize>
+			<x>256</x>
+			<y>430</y>
+			<Length>40</Length>
+		</Column3>
+		<Column4 type="SimpleText" name="Column 3" id="Totals3">
+			<FontSize>10</FontSize>
+			<x>470</x>
+			<y>430</y>
+			<Length>40</Length>
+		</Column4>
+	</Totals>
+
+</form>
