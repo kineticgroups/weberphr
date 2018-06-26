@@ -116,6 +116,10 @@ if (!isset($_GET['Delete']) AND isset($_SESSION['ReceiptBatch' . $identifier])){
 			prnMsg(_('The witholding tax entered should be numeric'),'warn');
 		}
 	}
+	else if(!isset($_POST['WitholdingTax']))
+	{
+		$_SESSION['ReceiptBatch' . $identifier]->WitholdingTax=0;
+	}
 	if (!isset($_POST['ReceiptType'])) {
 		$_POST['ReceiptType'] = '';
 	}
@@ -492,7 +496,10 @@ if (isset($_POST['CommitBatch'])){
 			//add witholdings if the witholding value is not 0
 			if($ReceiptItem->WitholdingTax != 0)
 			{
+
 				$exchange_rate = $_SESSION['ReceiptBatch' . $identifier]->FunctionalExRate*$_SESSION['ReceiptBatch' . $identifier]->ExRate;
+				$WithholdingTax = number_format(($ReceiptItem->WitholdingTax/$_SESSION['ReceiptBatch' . $identifier]->ExRate/$_SESSION['ReceiptBatch' . $identifier]->FunctionalExRate), 2, '.', '');
+				
 				$invoiced_amount = $exchange_rate*$ReceiptItem->Amount;
 				$sql = "INSERT INTO customerwitholdings(debtorno,debtortransid,amount,witheldamount,date_witheld,date_of_certificate,notes)
                 VALUES(
@@ -528,7 +535,7 @@ if (isset($_POST['CommitBatch'])){
 								'" . $PeriodNo . "',
 								'". $wht_gl_account . "',
 								'" . $witholding_tax_narrative . "',
-								'" . $ReceiptItem->WitholdingTax . "'
+								'" . $WithholdingTax . "'
 								)";
 				$DbgMsg = _('The SQL that failed to insert the GL transaction for the witholding tax account credit was');
 				$ErrMsg = _('Cannot insert a GL transaction for the witholding account credit');
@@ -538,7 +545,11 @@ if (isset($_POST['CommitBatch'])){
 
 		} //end of if its a customer receipt
 		$BatchDiscount += ($ReceiptItem->Discount/$_SESSION['ReceiptBatch' . $identifier]->ExRate/$_SESSION['ReceiptBatch' . $identifier]->FunctionalExRate);
-		$BatchReceiptsTotal += (($ReceiptItem->Amount - $ReceiptItem->WitholdingTax)/$_SESSION['ReceiptBatch' . $identifier]->ExRate/$_SESSION['ReceiptBatch' . $identifier]->FunctionalExRate);
+		//$WithholdingTax = number_format(($ReceiptItem->WitholdingTax/$_SESSION['ReceiptBatch' . $identifier]->ExRate/$_SESSION['ReceiptBatch' . $identifier]->FunctionalExRate), 2, '.', '');
+		$BatchReceiptsTotal += number_format((($ReceiptItem->Amount - $ReceiptItem->WitholdingTax)/$_SESSION['ReceiptBatch' . $identifier]->ExRate/$_SESSION['ReceiptBatch' . $identifier]->FunctionalExRate), 2, '.', '');
+		//$BatchReceiptsTotalFormated = number_format($BatchReceiptsTotalUnformated, 2, '.', '');
+		//$BatchReceiptsTotal = $BatchReceiptsTotalFormated - $WithholdingTax;
+		//echo '<p> total receiptts exchanged: '.$BatchReceiptsTotal.'</p>';
 
 	} /*end foreach $ReceiptItem */
 	echo '</tbody></table>';
@@ -608,6 +619,7 @@ if (isset($_POST['CommitBatch'])){
 		}
 		if ($BatchDebtorTotal!=0){
 			/* Now Credit Debtors account with receipts + discounts */
+			$BatchDebtorTotal = number_format($BatchDebtorTotal, 2, '.', '');
 			$SQL="INSERT INTO gltrans ( type,
 										typeno,
 										trandate,
@@ -622,7 +634,7 @@ if (isset($_POST['CommitBatch'])){
 							'" . $PeriodNo . "',
 							'". $_SESSION['CompanyRecord']['debtorsact'] . "',
 							'" . $_SESSION['ReceiptBatch' . $identifier]->Narrative . "',
-							'" . -$BatchDebtorTotal . "'
+							'" . -$BatchDebtorTotal. "'
 							)";
 			$DbgMsg = _('The SQL that failed to insert the GL transaction for the debtors account credit was');
 			$ErrMsg = _('Cannot insert a GL transaction for the debtors account credit');
@@ -1280,7 +1292,7 @@ if (((isset($_SESSION['CustomerRecord' . $identifier])
 	}
 	echo '<tr>
 			<td>' . _('Payee Bank Details') . ':</td>
-			<td><input tabindex="12" type="text" name="PayeeBankDetail" maxlength="22" size="20" value="' . $_POST['PayeeBankDetail'] . '" /></td>
+			<td><input tabindex="13" type="text" name="PayeeBankDetail" maxlength="22" size="20" value="' . $_POST['PayeeBankDetail'] . '" /></td>
 		</tr>
 		<tr>
 			<td>' . _('Narrative') . ':</td>
