@@ -220,7 +220,7 @@ if (DB_num_rows($result)>0){
 			if ($YPos < ($Bottom_Margin)) {// Begins new page.
 				include ('includes/PDFQuotationPageHeader.inc');
 			}
-			$LeftOvers = $pdf->addTextWrap(165, $YPos+33, $Width2, $FontSize2, $LeftOvers);
+			$LeftOvers = $pdf->addTextWrap(165, $YPos+33, 250, $FontSize2, $LeftOvers);
 		}
 
 		$QuotationTotal += $LineTotal;
