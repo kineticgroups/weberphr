@@ -111,7 +111,8 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
 								billable_expense='" . $billable_expense . "',
 								billable_ap='" . $billable_ap . "',
 								contract_amount='" . $_POST['ContractAmount'] . "',
-								bankaccount='" . $_POST['BankAccount'] . "'
+								bankaccount='" . $_POST['BankAccount'] . "',
+								projectbudget='" . $_POST['ProjectBudget'] . "'
     					WHERE project_id='" . $ProjectID . "'";
 
     			$ErrMsg = _('The project could not be updated because');
@@ -146,7 +147,8 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
 						billable_expense,
 						billable_ap,
 						contract_amount,
-						bankaccount
+						bankaccount,
+						projectbudget
 					)
     						VALUES (
 									'" . $_POST['ProjectID'] . "',
@@ -167,7 +169,8 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
 									'" . $billable_expense . "',
 									'" . $billable_ap . "',
     							'" . $_POST['ContractAmount'] . "',
-									'" . $_POST['BankAccount'] . "'
+									'" . $_POST['BankAccount'] . "',
+									'" . $_POST['ProjectBudget'] . "'
 									 )";
     			$ErrMsg =  _('The project could not be added because');
     			$DbgMsg = _('The SQL that was used to add the project failed was');
@@ -384,7 +387,8 @@ if (!isset($ProjectID) OR $ProjectID=='') {
 	$_POST['Customer']  = $ProjectRow['customer'];
 	$_POST['ContractAmount']  = $ProjectRow['contract_amount'];
 	$_POST['PID']  = $ProjectRow['id'];
-
+	$_POST['BankAccount']  = $ProjectRow['bankaccount'];
+	$_POST['ProjectBudget']  = $ProjectRow['projectbudget'];
 
   }
   echo '<tr><td><h3>Project Info</h3></td></tr>
@@ -556,7 +560,7 @@ echo '<tr>
 			}
 			echo '</select> </td></tr>';
 
-
+echo'<tr><td>Project Budget</td><td><input type="text" required="required" name="ProjectBudget"  value="'.$_POST['ProjectBudget'].'"/></td></tr>';
 echo '</table>';
 
 echo '<table class="selection">';

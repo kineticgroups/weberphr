@@ -713,3 +713,5 @@ CREATE TABLE IF NOT EXISTS `patimesheetspayments` (
   `enddate` date NOT NULL,
   PRIMARY KEY (`timesheetspay_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+ALTER TABLE `paprojects` ADD `projectbudget` DOUBLE(12,2) NOT NULL AFTER `bankaccount`;
