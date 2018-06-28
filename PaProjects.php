@@ -31,6 +31,16 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
 
     }
 
+
+		// BEGIN: Bank accounts  array.
+		$BankAccount = array();
+		$Query = "SELECT 	accountcode, bankaccountname FROM bankaccounts ";
+		$Result = DB_query($Query);
+		while ($Row = DB_fetch_array($Result)) {
+			$BankAccount[$Row['accountcode']] = $Row['bankaccountname'];
+		}
+
+
     if (isset($_POST['submit'])) {
 
       //initialise no input errors assumed initially before we test
@@ -100,7 +110,8 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
 								billing_type='" . $_POST['BillingType'] . "',
 								billable_expense='" . $billable_expense . "',
 								billable_ap='" . $billable_ap . "',
-								contract_amount='" . $_POST['ContractAmount'] . "'
+								contract_amount='" . $_POST['ContractAmount'] . "',
+								bankaccount='" . $_POST['BankAccount'] . "'
     					WHERE project_id='" . $ProjectID . "'";
 
     			$ErrMsg = _('The project could not be updated because');
@@ -134,7 +145,9 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
 						billing_type,
 						billable_expense,
 						billable_ap,
-						contract_amount)
+						contract_amount,
+						bankaccount
+					)
     						VALUES (
 									'" . $_POST['ProjectID'] . "',
 									'" . $_POST['ProjectName'] . "',
@@ -153,7 +166,9 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
 									'" . $_POST['BillingType'] . "',
 									'" . $billable_expense . "',
 									'" . $billable_ap . "',
-    							'" . $_POST['ContractAmount'] . "' )";
+    							'" . $_POST['ContractAmount'] . "',
+									'" . $_POST['BankAccount'] . "'
+									 )";
     			$ErrMsg =  _('The project could not be added because');
     			$DbgMsg = _('The SQL that was used to add the project failed was');
     			$result = DB_query($sql, $ErrMsg, $DbgMsg);
@@ -527,6 +542,20 @@ echo '<tr>
 						echo '</select><a target="_blank" href="'. $RootPath . '/Locations.php">' . ' ' . _('New') . '</a>
 					</td>
 			</tr>';
+
+			// Bank Accounts.
+			echo '<tr><td><label for="BankAccount">' . _('Bank Account') .
+				':</label></td><td><select id="BankAccount" name="BankAccount" >';
+			foreach ($BankAccount as $AccountCode => $Row) {
+
+				echo '<option';
+				if (isset($_POST['BankAccount']) and $_POST['BankAccount']==$AccountCode) {
+					echo ' selected="selected"';
+				}
+				echo ' value="' . $AccountCode . '">' . $Row . '</option>';
+			}
+			echo '</select> </td></tr>';
+
 
 echo '</table>';
 

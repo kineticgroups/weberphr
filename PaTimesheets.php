@@ -105,8 +105,7 @@ $week_date =$_POST['Begindate'];
 
 	 		if($_POST['Status']==1){
 
-	 			if($_SESSION['AccessLevel']==8 OR $_SESSION['AccessLevel']==10 OR $_SESSION['UserID']==$ManagerId  ){
-
+	 		if((in_array('25',$_SESSION['AllowedPageSecurityTokens'])) ){
 	 			}else{
 	 				$InputError = 1;
 	 				echo '<br />';
@@ -161,8 +160,7 @@ approved_by ='".$approveduser."'
 
 		if($_POST['Status']==1){
 
-		 if($_SESSION['AccessLevel']==8 OR $_SESSION['AccessLevel']==10 OR $_SESSION['UserID']==$ManagerId  ){
-
+		if((in_array('25',$_SESSION['AllowedPageSecurityTokens'])) ){
 		 }else{
 			 $InputError = 1;
 			 echo '<br />';
@@ -329,12 +327,53 @@ $mon=$_POST['Mon'];
  	 $sat=$_POST['Sat'];
  	  }
 
+		$sqlemployee = "SELECT
+		employee_id
+		 FROM patimesheetsinfo
+	WHERE timesheetsinfo_id = '" .$_POST['Timesheetinfo']."'
+		 ";
+
+
+		 $checkemployee=DB_query($sqlemployee);
+		 $getemployee=DB_fetch_array($checkemployee);
+
+		 $employeename = "SELECT
+		 first_name,
+		 middle_name,
+		 last_name,
+		 employee_id
+		  FROM hremployees
+		 WHERE empid = '" .$getemployee['employee_id']."'
+		  ";
+		  $checkemployeename=DB_query($employeename);
+		  $getemployeename=DB_fetch_array($checkemployeename);
+		$checkresource = "SELECT count(*)
+					 FROM paprojectresourcelabour
+					 WHERE project_id = '" . $_POST['Project'] . "'
+					 AND employee_id = '" .$getemployee['employee_id']."'
+					 ";
+
+		$checkresultresource=DB_query($checkresource);
+		$checkrowresource=DB_fetch_row($checkresultresource);
+		if ($checkrowresource[0]==0){
+
+			$InputError = 1;
+			$SelectedName	 = $_POST['Timesheetinfo'];
+			echo '<br />';
+			prnMsg(_('First Add Project Resources/Labour For this Employee ').' '.$getemployeename['first_name'].' '.$getemployeename['middle_name'].' '.$getemployeename['last_name'],'error');
+echo'<a href="'. $RootPath . '/PaProjectResourcesLabour.php">' . _('Add Project Resources/Labour') . '</a><br />' . "\n";
+			$Errors[$i] = 'Task';
+			$i++;
+		}
+
+
+
+
 	$checksql = "SELECT count(*)
 				 FROM patimesheetentries
 				 WHERE project_id = '" . $_POST['Project'] . "'
 				 AND projecttask_id = '" .$_POST['Task']."'
 				 AND timesheetinfo_id = '" .$_POST['Timesheetinfo']."'
-
 				 ";
 	$checkresult=DB_query($checksql);
 	$checkrow=DB_fetch_row($checkresult);
@@ -773,7 +812,8 @@ sun,
  wed,
  thu,
  fri,
- sat
+ sat,
+ paystatus
  FROM patimesheetentries
 JOIN paprojects on patimesheetentries.project_id = paprojects.id
 JOIN paprojecttasks on patimesheetentries.projecttask_id = paprojecttasks.projecttask_id
@@ -808,8 +848,11 @@ $totalduration=$myentries['sun']+$myentries['mon']+$myentries['tue']+$myentries[
 	<td><input type="text" name="Fri" size="3"  value="' . $myentries['fri'] . '" /></td>
 	<td><input type="text" name="Sat"  size="3" value="' . $myentries['sat'] . '" />
 	</td>
-	<td>'.$totalduration.'</td>
-	<input type="hidden" name="Timesheetinfo"  size="3" value="' . $SelectedName . '" />
+	<td>'.$totalduration.'</td>';
+	if($_POST['status']==1){
+echo '<td>'._(($myentries['paystatus']==1 )?'Paid':'N0T PAID').'</td>';
+}
+	echo'<input type="hidden" name="Timesheetinfo"  size="3" value="' . $SelectedName . '" />
 <input type="hidden" name="SelectedEntry"  size="3" value="' . $myentries['timesheetentry_id'] . '" />';
 if($_POST['status']==0)
 {

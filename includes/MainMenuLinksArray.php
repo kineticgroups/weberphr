@@ -533,14 +533,16 @@ $MenuItems['FA']['Maintenance']['URL'] = array(	'/FixedAssetCategories.php',
 																																					_('Project Resources/Labour'),
 																																					_('Project Tasks'),
 																																					_('Project Task Resources'),
-																																					_('Timesheets'));
+																																					_('Timesheets'),
+																																					_('Pay Approved Timesheets'));
 
 																								$MenuItems['PA']['Transactions']['URL'] = array('/PaSelectProject.php',
 																																				'/PaProjects.php?New=Yes',
 																																				'/PaProjectResourcesLabour.php',
 																																				'/PaProjectTasks.php',
 																																				'/PaProjectTaskResources.php',
-																																				'/PaTimesheets.php'
+																																				'/PaTimesheets.php',
+																																				'/PaPayApprovedTimesheets.php'
 																																				);
 
 																								$MenuItems['PA']['Reports']['Caption'] = array(	_('Employee Time Report'),

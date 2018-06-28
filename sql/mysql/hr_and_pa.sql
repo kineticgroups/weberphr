@@ -695,3 +695,9 @@ INSERT INTO  `scripts` values('HrMyLeave.php','20', 'View Employee Leaves  ');
 
 ALTER TABLE `debtorsmaster` ADD `isproject` TINYINT NOT NULL DEFAULT '0' AFTER `language_id`;
 ALTER TABLE `debtortrans` ADD `projecttaskresource_id` INT NOT NULL DEFAULT '0' AFTER `salesperson`;
+
+INSERT INTO  `scripts` values('PaPayApprovedTimesheets.php','25', 'Pay Approved Timesheets');
+ALTER TABLE `paprojects` ADD `bankaccount` VARCHAR(100) NOT NULL AFTER `invoice_with_parent`;
+ALTER TABLE `patimesheetentries` ADD `paystatus` TINYINT NOT NULL DEFAULT '0' AFTER `created_date`;
+
+INSERT INTO  `scripts` values('PaProjectInvoices.php','25', 'Generate Project Invoice');
