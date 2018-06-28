@@ -12,7 +12,7 @@ $BookMark = 'Payroll';
 include('includes/header.php');
 include('includes/SQL_CommonFunctions.inc');
 include('includes/CountriesArray.php');
-
+echo'<script type="text/javascript" src="plugins/select2/js/select2.min.js"></script>';
 if (isset($_GET['Projects'])) {
 	$SelectedProject = $_GET['Projects'];
 } elseif (isset($_POST['Projects'])){
@@ -49,7 +49,7 @@ echo '<form action="' . htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES,'UTF-8'
 
       echo '<table class="selection"><tr><td>';
 
-    echo ''. _('Project') . ':<select required="required" id="select-payrollgroup" name="Projects">
+    echo ''. _('Project') . ':<select required="required" id="select" name="Projects">
 		<option value="">Select Project</option>';
     $sql = "SELECT id, project_id,project_name FROM paprojects";
     $resultProjects = DB_query($sql);
@@ -102,6 +102,18 @@ echo "<script>
 				});
 
 		</script>";
+
+echo '<script>
+	$(document).ready(function() {
+						$("head").append(\'<link rel="stylesheet" type="text/css" href="plugins/select2/css/select2.css"/>\');
+
+						    $("#select").select2();
+
+						});
+
+
+
+		</script>';
 
 if(isset($_POST['PayTimesheets'])) {
 
