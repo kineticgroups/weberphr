@@ -48,7 +48,7 @@ echo '<form action="' . htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES,'UTF-8'
       <input type="hidden" name="FormID" value="' . $_SESSION['FormID'] . '" />';
 
       echo '<table class="selection"><tr><td>';
-  
+
     echo ''. _('Project') . ':<select required="required" id="select-payrollgroup" name="Projects">
 		<option value="">Select Project</option>';
     $sql = "SELECT id, project_id,project_name FROM paprojects";
@@ -444,7 +444,7 @@ $totalamount=$totalamount +$timesheet1['totalamout'];
 	}
 }
 
-$sql = "INSERT INTO patimesheetspayments
+$sql11 = "INSERT INTO patimesheetspayments
 			(project_id,
 			employee_id,
 			labourrate ,
@@ -461,6 +461,7 @@ $sql = "INSERT INTO patimesheetspayments
 '" . $Fromdate->format('Y-m-d') . "',
 '" . $Todate->format('Y-m-d') . "'
 )";
+$resultpay = DB_query($sql11);
 
 	}
 

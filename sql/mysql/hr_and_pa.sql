@@ -701,3 +701,15 @@ ALTER TABLE `paprojects` ADD `bankaccount` VARCHAR(100) NOT NULL AFTER `invoice_
 ALTER TABLE `patimesheetentries` ADD `paystatus` TINYINT NOT NULL DEFAULT '0' AFTER `created_date`;
 
 INSERT INTO  `scripts` values('PaProjectInvoices.php','25', 'Generate Project Invoice');
+CREATE TABLE IF NOT EXISTS `patimesheetspayments` (
+  `timesheetspay_id` int(11) NOT NULL AUTO_INCREMENT,
+  `project_id` int(11) NOT NULL,
+  `employee_id` int(11) NOT NULL,
+  `labourrate` decimal(12,2) NOT NULL,
+  `totaltime` decimal(12,2) NOT NULL,
+  `totalamount` decimal(12,2) NOT NULL,
+  `datepaid` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `startdate` date NOT NULL,
+  `enddate` date NOT NULL,
+  PRIMARY KEY (`timesheetspay_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
