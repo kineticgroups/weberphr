@@ -441,7 +441,7 @@ if(isset($_POST['pay'])){
 
 
 
-
+DB_Txn_Begin();
 	foreach($employee_array1 as $index => $employee1){
 $totaltime=0; $totalamount=0;
 foreach($timesheet_array1 as $index => $timesheet1){
@@ -494,14 +494,14 @@ $gl_posting_account = $default_project_gl_account;
 
 
 $DatePaid = Date($_SESSION['DefaultDateFormat']);
-$Narrative = "Payment  for Approved Timesheet ".$_POST['Totaltime']." from". $Fromdate->format('Y-m-d'). " to ". $Todate->format('Y-m-d')."";
+$Narrative = "Approved Timesheet Payment";
 $PeriodNo = GetPeriod($DatePaid,$db);
 $Cheque = 0;
 $Tag = 0;
 $PaymentType ="Direct Credit";
 $ExchangeRate = 1;
 //begin transactions
-$result = DB_Txn_Begin();
+
 $TransNo = GetNextTransNo( 1, $db);
 $TransType = 1;
 
