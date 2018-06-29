@@ -1838,14 +1838,12 @@ projecttaskresource_id
 		</tr>';
 
 $sqlcustomer = "SELECT
+debtorno,
 				isproject
 		FROM debtorsmaster
 		WHERE debtorno = '" .  $_SESSION['Items'.$identifier]->DebtorNo . "'";
 		$resultcustomer = DB_query($sqlcustomer);
 		$myrowcustomer = DB_fetch_array($resultcustomer);
-
-
-
 	if ($myrowcustomer['isproject']==1){
 		++$j;
 		echo '<tr><td>' .  _('Project Task Resource') .':</td>
@@ -1862,12 +1860,12 @@ echo'<option value="" > Select Project Task Resource</option>';
 						JOIN hremployees on paprojecttaskresources.employee_id = hremployees.empid
 						JOIN paprojects on paprojecttaskresources.project_id = paprojects.id
 						JOIN paprojecttasks on paprojecttaskresources.projecttask_id = paprojecttasks.projecttask_id
-						WHERE paprojects.project_id = '" .  $_SESSION['Items'.$identifier]->DebtorNo . "'";
+						WHERE paprojects.project_id = '".trim($_SESSION['Items'.$identifier]->DebtorNo )."'";
 						$resultresources = DB_query($sqlresources );
-echo $_SESSION['Items'.$identifier]->DebtorNo;
+
 				while ($myrowresources=DB_fetch_array($resultresources)) {
 
-						echo '<option '._(($_POST['Resource'] == $myrowresources['projecttaskresource_id']) ? ' selected="selected"' :'').'selected="selected" value="' . $myrowresources['projecttaskresource_id'] . '">' . $myrowresources['project_name'] . '</option>';
+						echo '<option '._(($_POST['Resource'] == $myrowresources['projecttaskresource_id']) ? ' selected="selected"' :'').'selected="selected" value="' . $myrowresources['projecttaskresource_id'] . '">' . $myrowresources['projecttask_name'] .' - '.$myrowresources['first_name'].' '.$myrowresources['middle_name'].' '.$myrowresources['last_name'].'</option>';
 
 				}
 

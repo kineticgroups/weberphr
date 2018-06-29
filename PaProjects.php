@@ -93,7 +93,7 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
 					$billable_ap = (isset($_POST['BillableAp'])) ? 1 : 0;
 
           $sql = "UPDATE paprojects
-    					SET project_id='" . $_POST['ProjectID'] . "',
+    					SET project_id='" .mb_strtoupper($_POST['ProjectID']) . "',
 								project_name='" . $_POST['ProjectName'] . "',
 								project_category='".$_POST['ProjectCategory']."',
 								project_type='" . $_POST['ProjectType'] . "',
@@ -153,7 +153,7 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
 						projectbudget
 					)
     						VALUES (
-									'" . $_POST['ProjectID'] . "',
+									'" .mb_strtoupper($_POST['ProjectID']) . "',
 									'" . $_POST['ProjectName'] . "',
 									'".$_POST['ProjectCategory']."',
 									'" . $_POST['ProjectType'] . "',
@@ -245,7 +245,7 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
 									specialinstructions,
 									deliverblind)
 							VALUES ('" . mb_strtoupper($_POST['ProjectID']) . "',
-								'" .$_POST['ProjectID'] . "',
+								'" .mb_strtoupper($_POST['ProjectID']) . "',
 								'" . $_POST['ProjectName']  . "',
 								'" . filter_number_format(0) . "',
 								'0',
