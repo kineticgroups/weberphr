@@ -488,7 +488,7 @@ $resulttime = DB_query($sqlupdate);
 	$sql_company_details = DB_query("SELECT currencydefault, payrollact,debtorsact FROM companies");
 	$result_company_details = DB_fetch_array($sql_company_details);
 	$default_currency = $result_company_details['currencydefault'];
-$default_project_gl_account= $result_company_details['debtorsact'];
+$default_project_gl_account= $result_company_details['payrollact'];
 $project_currency = $default_currency;
 $gl_posting_account = $default_project_gl_account;
 
