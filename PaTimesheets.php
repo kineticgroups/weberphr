@@ -366,6 +366,25 @@ echo'<a href="'. $RootPath . '/PaProjectResourcesLabour.php">' . _('Add Project 
 			$i++;
 		}
 
+		$checktask = "SELECT count(*)
+					 FROM paprojecttaskresources
+					 WHERE project_id = '" . $_POST['Project'] . "'
+					 AND  projecttask_id='" . $_POST['Task'] . "'
+					 AND employee_id = '" .$getemployee['employee_id']."'
+					 ";
+
+		$checkresulttask=DB_query($checktask);
+		$checkrowtask=DB_fetch_row($checkresulttask);
+		if ($checkrowtask[0]==0){
+
+			$InputError = 1;
+			$SelectedName	 = $_POST['Timesheetinfo'];
+			echo '<br />';
+			prnMsg(_(' Employee').' '.$getemployeename['first_name'].' '.$getemployeename['middle_name'].' '.$getemployeename['last_name'].' is not assigned to this Task '.$_POST['Task'],'error');
+		echo'<a href="'. $RootPath . '/PaProjectTaskResources.php">' . _('Add Project Task Resource') . '</a><br />' . "\n";
+			$Errors[$i] = 'Task';
+			$i++;
+		}
 
 
 
@@ -840,13 +859,13 @@ $totalduration=$myentries['sun']+$myentries['mon']+$myentries['tue']+$myentries[
 		 }
 		echo'</select></td>
 	<td>'._(($myentries['taskbillable']==1)?'YES':'NO').'</td>
-	<td><input type="text" name="Sun"  size="3"  value="' . $myentries['sun'] . '" /></td>
-	<td><input type="text" name="Mon"  size="3" value="' . $myentries['mon'] . '" /></td>
-	<td><input type="text" name="Tue"  size="3" value="' .$myentries['tue'] . '" /></td>
-	<td><input type="text" name="Wed"  size="3" value="' . $myentries['wed'] . '" /></td>
-	<td><input type="text" name="Thu" size="3"  value="' . $myentries['thu'] . '" /></td>
-	<td><input type="text" name="Fri" size="3"  value="' . $myentries['fri'] . '" /></td>
-	<td><input type="text" name="Sat"  size="3" value="' . $myentries['sat'] . '" />
+	<td><input type="number" style="width:60px" min="0" max="24" step=".01"  name="Sun"   value="' . $myentries['sun'] . '" /></td>
+	<td><input type="number" style="width:60px" min="0" max="24" step=".01" name="Mon"  size="3" value="' . $myentries['mon'] . '" /></td>
+	<td><input type="number" style="width:60px" min="0" max="24" step=".01"" name="Tue"  size="3" value="' .$myentries['tue'] . '" /></td>
+	<td><input type="number" style="width:60px" min="0" max="24" step=".01" name="Wed"  size="3" value="' . $myentries['wed'] . '" /></td>
+	<td><input type="number" style="width:60px" min="0" max="24" step=".01" name="Thu" size="3"  value="' . $myentries['thu'] . '" /></td>
+	<td><input type="number" style="width:60px" min="0" max="24" step=".01" name="Fri" size="3"  value="' . $myentries['fri'] . '" /></td>
+	<td><input type="number" style="width:60px" min="0" max="24" step=".01" name="Sat"  size="3" value="' . $myentries['sat'] . '" />
 	</td>
 	<td>'.$totalduration.'</td>';
 	if($_POST['status']==1){
@@ -884,13 +903,13 @@ echo'<option '._(($_POST['Task']== $TaskId )? 'selected ' : '').' value="'.$Task
 	 }
 	echo'</select></td>
 <td></td>
-<td><input type="text" name="Sun"  size="3"  value="' . $_POST['Sun'] . '" /></td>
-<td><input type="text" name="Mon"  size="3" value="' . $_POST['Mon'] . '" /></td>
-<td><input type="text" name="Tue"  size="3" value="' . $_POST['Tue'] . '" /></td>
-<td><input type="text" name="Wed"  size="3" value="' . $_POST['Wed'] . '" /></td>
-<td><input type="text" name="Thu" size="3"  value="' . $_POST['Thu'] . '" /></td>
-<td><input type="text" name="Fri" size="3"  value="' . $_POST['Fri'] . '" /></td>
-<td><input type="text" name="Sat"  size="3" value="' . $_POST['Sat'] . '" />
+<td><input  type="number" style="width:60px" min="0" max="24" step=".01"  name="Sun"  size="3"  value="' . $_POST['Sun'] . '" /></td>
+<td><input  type="number" style="width:60px" min="0" max="24" step=".01"  name="Mon"  size="3" value="' . $_POST['Mon'] . '" /></td>
+<td><input  type="number" style="width:60px" min="0" max="24" step=".01"  name="Tue"  size="3" value="' . $_POST['Tue'] . '" /></td>
+<td><input  type="number" style="width:60px" min="0" max="24" step=".01"  name="Wed"  size="3" value="' . $_POST['Wed'] . '" /></td>
+<td><input  type="number" style="width:60px" min="0" max="24" step=".01"  name="Thu" size="3"  value="' . $_POST['Thu'] . '" /></td>
+<td><input  type="number" style="width:60px" min="0" max="24" step=".01"  name="Fri" size="3"  value="' . $_POST['Fri'] . '" /></td>
+<td><input  type="number" style="width:60px" min="0" max="24" step=".01"  name="Sat"  size="3" value="' . $_POST['Sat'] . '" />
 </td><input type="hidden" name="Timesheetinfo"  size="3" value="' . $SelectedName . '" />
 <td></td>
 <td><input type="submit" name="Entry" value="' . _('Save') . '" /></td>

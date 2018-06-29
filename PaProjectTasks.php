@@ -132,7 +132,6 @@ planbegindate= '" . $begindate->format('Y-m-d'). "',
 planenddate= '" . $enddate->format('Y-m-d'). "',
 plannedduration= '" . $_POST['Plannedduration']. "',
 dependanttask= '" . $_POST['Dependent']. "',
-servicetask= '" . $_POST['Servicetask']. "',
 taskbillable= '" . $billabe. "',
 taskdesc= '" . $_POST['TaskDescription']. "',
 taskmilestone= '" . $milestone. "',
@@ -188,7 +187,7 @@ parent_task= '" . $_POST['Parenttask']. "'
 						 planenddate,
 						 	plannedduration,
 						dependanttask,
-						servicetask,
+
 						taskbillable,
 						 	taskdesc,
 						taskmilestone,
@@ -205,7 +204,6 @@ parent_task= '" . $_POST['Parenttask']. "'
 '" . $enddate->format('Y-m-d'). "',
 '" . $_POST['Plannedduration']. "',
 '" .$_POST['Dependent']. "',
-'" . $_POST['Servicetask'] . "',
 '" .$billabe . "',
 '" . $_POST['TaskDescription']  . "',
 '" . $milestone ."',
@@ -338,11 +336,9 @@ or deletion of the records*/
 	 planbegindate,
      planenddate,
      taskstatus,
-	 taskbillable,
-	  description
+	 taskbillable
 	 FROM paprojecttasks
 JOIN paprojects on paprojecttasks.project_id = paprojects.id
-JOIN stockmaster on paprojecttasks.servicetask = stockmaster.stockid
 JOIN paprojecttaskstatus on paprojecttasks.taskstatusid = paprojecttaskstatus.taskstatusid
 	 ";
 	$result = DB_query($sql);
@@ -355,7 +351,7 @@ JOIN paprojecttaskstatus on paprojecttasks.taskstatusid = paprojecttaskstatus.ta
   <th class="ascending">' . _('Project ') . '</th>
 	  <th class="ascending">' . _('Start Date') . '</th>
   <th class="ascending">' . _('End Date') . '</th>
- <th class="ascending">' . _('Service') . '</th>
+
 
 <th class="ascending">' . _('Status') . '</th>
 		</tr>';
@@ -377,7 +373,7 @@ printf('<td>%s</td>
 <td>%s</td>
 <td>%s</td>
 <td>%s</td>
-<td>%s</td>
+
 		<td><a href="%sSelectedName=%s">' . _('Edit') . '</a></td>
 		<td><a href="%sSelectedName=%s&amp;delete=yes" onclick=\'return confirm("' . _('Are you sure you wish to delete this Category Name?') . '");\'>' . _('Delete') . '</a></td>
 		</tr>',
@@ -387,7 +383,7 @@ printf('<td>%s</td>
 		$myrow['project_name'],
 		$myrow['planbegindate'],
 			$myrow['planenddate'],
-		$myrow['description'],
+	
 		$myrow['taskstatus'],
 		htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES,'UTF-8') . '?',
 		$myrow['projecttask_id'],
@@ -563,18 +559,7 @@ $_POST['Attachments']  = $myrow['attachment'];
 					}
 					echo'</select></td>
 			</tr>
-			<tr>
-					<td>' . _('Service Offered') . ':</td>
-					<td>
 
-									<select name="Servicetask">';
-									  foreach ($Services as $stockId => $Row) {
-									echo'<option '._(($_POST['Servicetask']== $stockId )? 'selected ' : '').' value="'.$stockId.'">'.$Row.'</option>';
-										}
-										echo'</select>
-
-					</td>
-				</tr>
 				<tr>
 						<td>' . _('Billable') . ':</td>
 						<td><input '._(($_POST['Billable']==1)? ' checked ':' ').' type="checkbox" name="Billable" "/></td>

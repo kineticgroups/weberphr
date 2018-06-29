@@ -73,6 +73,45 @@ if (isset($_POST['submit'])) {
 	$fulltime=0;
 	}
 
+	$resources = "SELECT count(*)
+		     FROM paprojectresourcelabour
+		     WHERE project_id = '" . $_POST['Project'] . "'AND employee_id = '" . $_POST['Employee'] . "' ";
+				;
+	$checkresources=DB_query($resources);
+	$checkrowresources=DB_fetch_row($checkresources);
+
+	if ($checkrowresources[0]==0 ) {
+		$InputError = 1;
+		echo '<br />';
+		prnMsg(_('This Employee').' '.$_POST['Employee'].' is not attached to this Project  '.$_POST['Project'].'','error');
+		echo '<a href="' . $RootPath . '/PaProjectResourcesLabour.php">' . _('Add a Project Resources Labour') . '</a><br />' . "\n";
+
+		$Errors[$i] = 'Employee';
+		$i++;
+	}
+
+	$task = "SELECT count(*)
+				 FROM paprojecttasks
+				 WHERE project_id = '" . $_POST['Project'] . "'
+				 AND  projecttask_id = '" . $_POST['Task'] . "' ";
+				;
+	$checktask=DB_query($task);
+	$checkrowtask=DB_fetch_row($checktask);
+
+	if ($checkrowtask[0]==0 ) {
+		$InputError = 1;
+		echo '<br />';
+		prnMsg(_('This Task').' '.$_POST['Task'].' is not attached to this Project  '.$_POST['Project'].'','error');
+		echo '<a href="' . $RootPath . '/PaProjectTasks.php">' . _('Add a Project Task') . '</a><br />' . "\n";
+
+		$Errors[$i] = 'Employee';
+		$i++;
+	}
+
+
+
+
+
 	$begindate = DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['Begindate']);
 	$enddate = DateTime::createFromFormat($_SESSION['DefaultDateFormat'],$_POST['Enddate']);
 
