@@ -125,7 +125,9 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
 
         }else { //it is a NEW project
 
-					$parent_project = (mb_strlen($_POST['ParentProjectID']) > 0 ) ? $_POST['ParentProjectID'] : NULL;
+					DB_Txn_Begin();
+
+					$parent_project = (mb_strlen($_POST['ParentProjectID']) > 0 ) ? $_POST['ParentProjectID'] : 0;
 					$billable_expense = (isset($_POST['BillableExpense'])) ? 1 : 0;
 					$billable_ap = (isset($_POST['BillableAp'])) ? 1 : 0;
 
@@ -213,7 +215,6 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
 								'" . filter_number_format($_SESSION['DefaultCreditLimit']) . "',
 								'" . $_SESSION['DefaultPriceList'] . "',
 								'0',
-
 								'0',
 								'" . $_SESSION['DefaultCustomerType'] . "',
 								'" . $_SESSION['Language'] . "',
@@ -222,38 +223,39 @@ echo '<p class="page_title_text"><img src="'.$RootPath.'/css/'.$Theme.'/images/u
 					$ErrMsg = _('This customer could not be added because');
 					$resultcustomer = DB_query($sqlcustomer,$ErrMsg);
 
+					//pick sales person and sales areas and pricelist
+					$sql_salesman = DB_query("SELECT salesmancode from salesman limit 1");
+					$sql_row = DB_fetch_array($sql_salesman);
+					$salesman = $sql_row['salesmancode'];
+
+					$sql_area = DB_query("SELECT areacode FROM areas limit 1");
+					$sql_row = DB_fetch_array($sql_area);
+					$salesarea = $sql_row['areacode'];
 					$SQLbrcustomer = "INSERT INTO custbranch (branchcode,
 									debtorno,
 									brname,
-
 									estdeliverydays,
 									fwddate,
 									salesman,
-
 									contactname,
 									area,
 									taxgroupid,
 									defaultlocation,
 									disabletrans,
-
-
+									specialinstructions,
 									deliverblind)
 							VALUES ('" . mb_strtoupper($_POST['ProjectID']) . "',
 								'" .$_POST['ProjectID'] . "',
 								'" . $_POST['ProjectName']  . "',
-
 								'" . filter_number_format(0) . "',
 								'0',
-								'DE',
-
+								'".$salesman."',
 								'" .$_POST['ProjectName'] . "',
-								'DE',
-
+								'".$salesarea."',
 								'1',
 								'" . $_POST['ProjectLocation'] . "',
 								'0',
-
-
+								'',
 								'1')";
 
 $resultbrcustomer = DB_query($SQLbrcustomer);
@@ -261,6 +263,7 @@ $resultbrcustomer = DB_query($SQLbrcustomer);
 
 
           if (DB_error_no() ==0) {
+						DB_Txn_Commit();
     				//$NewEmpID = DB_Last_Insert_ID($db,'hremployees', 'empid');
     				prnMsg( _('The new project has been added to the database  :'),'success');
 						prnMsg( _('Customer '.$_POST['ProjectID'].'  has been created  :'),'success');
