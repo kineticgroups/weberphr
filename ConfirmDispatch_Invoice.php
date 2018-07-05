@@ -1865,7 +1865,7 @@ echo'<option value="" > Select Project Task Resource</option>';
 
 				while ($myrowresources=DB_fetch_array($resultresources)) {
 
-						echo '<option '._(($_POST['Resource'] == $myrowresources['projecttaskresource_id']) ? ' selected="selected"' :'').'selected="selected" value="' . $myrowresources['projecttaskresource_id'] . '">' . $myrowresources['projecttask_name'] .' - '.$myrowresources['first_name'].' '.$myrowresources['middle_name'].' '.$myrowresources['last_name'].'</option>';
+						echo '<option '._(($_POST['Resource'] == $myrowresources['projecttaskresource_id']) ? ' selected="selected"' :'').' value="' . $myrowresources['projecttaskresource_id'] . '">' . $myrowresources['projecttask_name'] .' - '.$myrowresources['first_name'].' '.$myrowresources['middle_name'].' '.$myrowresources['last_name'].'</option>';
 
 				}
 

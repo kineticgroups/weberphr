@@ -13,7 +13,12 @@ include('includes/session.php');
 $Title = _('Enter Supplier Credit Note Against Goods Received');
 
 include('includes/header.php');
-
+if(empty($_GET['identifier'])) {
+	/*unique session identifier to ensure that there is no conflict with other credit entry sessions on the same machine  */
+	$identifier=date('U');
+} else {
+	$identifier=$_GET['identifier'];
+}
 echo '<p class="page_title_text">
 		<img src="'.$RootPath.'/css/'.$Theme.'/images/magnifier.png" title="' . _('Dispatch') . '" alt="" />' . ' ' . $Title . '
 	</p>';
@@ -72,6 +77,8 @@ if (isset($_POST['AddGRNToTrans'])){
 												$_POST['GRNBatchNo']);
 	}
 }
+
+
 
 if (isset($_GET['Delete'])){
 
@@ -265,6 +272,8 @@ if (DB_num_rows($GRNResults)>0){
 						purchorderdetails.jobref,
 						shipments.closed,
 						purchorderdetails.assetid,
+						stockmaster.controlled,
+						stockmaster.serialised,
 						stockmaster.decimalplaces
 				FROM grns INNER JOIN purchorderdetails
 				ON grns.podetailitem=purchorderdetails.podetailitem
@@ -304,9 +313,42 @@ if (DB_num_rows($GRNResults)>0){
 		echo '<tr>
 				<td>' . $_POST['GRNNo'] . '</td>
 				<td>' . $myrow['itemcode'] . ' ' . $myrow['itemdescription'] . '</td>
-				<td class="number">' . locale_number_format($myrow['qtyostdg'],$myrow['decimalplaces']) . '</td>
-				<td><input type="text" class="number" name="This_QuantityCredited" value="' . locale_number_format($myrow['qtyostdg'],$myrow['decimalplaces']) . '" size="11" maxlength="10" /></td>
-				<td class="number">' . $DisplayPrice . '</td>
+				<td class="number">' . locale_number_format($myrow['qtyostdg'],$myrow['decimalplaces']) . '</td>';
+				if($myrow['controlled']==1) {
+
+					//get default location for returns;
+					$sql_returns_location = DB_query("SELECT supplier_returns_location FROM companies limit 1");
+					$location_row = DB_fetch_row($sql_returns_location);
+					$returns_location = $location_row[0];
+					$serials_array = array();
+										$SQL = "SELECT 	serialno
+												FROM stockserialitems
+												WHERE loccode='" . $returns_location . "'
+												AND stockid = '" . $myrow['itemcode'] . "' AND quantity='1'";
+
+										$ErrMsg = _('This invoice can not be credited using this program') . '. ' . _('A manual credit note will need to be prepared') . '. ' . _('The line item') . ' ' . $myrow['stockid'] . ' ' . _('is controlled but the serial numbers or batch numbers could not be retrieved because');
+										$DbgMsg = _('The SQL used to get the controlled item details was');
+										$SerialItemsResult = DB_query($SQL,$ErrMsg, $DbgMsg);
+
+										while($SerialItemsRow = DB_fetch_array($SerialItemsResult)) {
+											$serials_array[]= $SerialItemsRow['serialno'];
+
+										}
+
+					echo '<td><input type="text" id="controlled_input_quantity" class="number" name="This_QuantityCredited" value="' . locale_number_format($myrow['qtyostdg'],$myrow['decimalplaces']) . '" size="11" maxlength="10" />';
+					echo '<select id="selected_serial_numbers" name="SelectedSerialNumbers" multiple >';
+							foreach($serials_array as $serial)
+							{
+								echo '<option value="'.$serial.'">'.$serial.'</option>';
+							}
+					echo '</select></td>';
+				} else {
+
+					//echo '<td><input class="number" ' .($j==1 ? 'autofocus="autofocus" ':'') . ' maxlength="6" name="Quantity_' . $LnItm->LineNumber .'" required="required" size="6" tabindex="'.$tabindex++.'" title="' . _('Enter the quantity of this item to credit') . '" type="text" value="' . locale_number_format($LnItm->QtyDispatched,$LnItm->DecimalPlaces) . '" /></td>';
+					echo '<td><input type="text" class="number" name="This_QuantityCredited" value="' . locale_number_format($myrow['qtyostdg'],$myrow['decimalplaces']) . '" size="11" maxlength="10" /></td>';
+				}
+
+				echo '<td class="number">' . $DisplayPrice . '</td>
 				<td><input type="text" class="number" name="ChgPrice" value="' . locale_number_format($Price,$_SESSION['SuppTrans']->CurrDecimalPlaces) . '" size="11" maxlength="10" /></td>
 			</tr>
 			</table>';
@@ -340,7 +382,16 @@ if (DB_num_rows($GRNResults)>0){
 		echo '<input type="hidden" name="GRNBatchNo" value="' . $myrow['grnbatch'] . '" />';
 	}
 } //end if there were GRNs to select
+echo '<script>
+				$( document ).ready(function() {
 
+
+						$("#selected_serial_numbers").change(function(){
+							var count = $("#selected_serial_numbers :selected").length;
+							$("#controlled_input_quantity").val(count);
+						});
+				});
+		</script>';
 echo '</div>
       </form>';
 include('includes/footer.php');

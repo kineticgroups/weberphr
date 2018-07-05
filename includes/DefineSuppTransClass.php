@@ -332,6 +332,7 @@ all the info to do the necessary entries without looking up ie additional querie
 	var $DecimalPlaces;
 	var $GRNBatchNo;
 	var $SupplierRef;
+	var $SerialNumbers;
 
 	function __construct ($GRNNo,
 					$PODetailItem,
@@ -352,7 +353,8 @@ all the info to do the necessary entries without looking up ie additional querie
 					$Hold=0,
 					$DecimalPlaces=2,
 					$GRNBatchNo,
-					$SupplierRef=''){
+					$SupplierRef='',
+					$SerialNumbers = array()){
 
 
 
@@ -377,6 +379,7 @@ all the info to do the necessary entries without looking up ie additional querie
 		$this->DecimalPlaces = $DecimalPlaces;
 		$this->GRNBatchNo = $GRNBatchNo;
 		$this->SupplierRef = $SupplierRef;
+		$this->SerialNumbers = $SerialNumbers;
 	}
 
 	function GRNs($GRNNo,
@@ -398,7 +401,8 @@ all the info to do the necessary entries without looking up ie additional querie
 					$Hold=0,
 					$DecimalPlaces=2,
 					$GRNBatchNo,
-					$SupplierRef=''){
+					$SupplierRef='',
+					$SerialNumbers=array()){
 		self::__construct($GRNNo,
 					$PODetailItem,
 					$ItemCode,
@@ -418,7 +422,8 @@ all the info to do the necessary entries without looking up ie additional querie
 					$Hold=0,
 					$DecimalPlaces=2,
 					$GRNBatchNo,
-					$SupplierRef='');
+					$SupplierRef='',
+					$SerialNumbers=array());
 	}
 
 	function Modify ($PODetailItem,
@@ -496,7 +501,7 @@ Class Shipment {
 	Var $Counter;
 	Var $ShiptRef;
 	Var $Amount;
-	
+
 	function __construct($Counter, $ShiptRef, $Amount){
 		$this->Counter = $Counter;
 		$this->ShiptRef = $ShiptRef;

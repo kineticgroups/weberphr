@@ -66,6 +66,7 @@ if (isset($_POST['submit'])) {
 									gllink_stock='" . $_POST['GLLink_Stock'] ."',
 									witholdingtaxexempted='" . $_POST['WitholdingTaxExempted'] ."',
 									witholdingtaxglaccount='" . $_POST['WitholdingTaxAct'] ."',
+									supplier_returns_location='" . $_POST['SupplierGoodsReturnedLocation'] ."',
 									freightact='" . $_POST['FreightAct'] . "'
 								WHERE coycode=1";
 
@@ -133,6 +134,7 @@ if ($InputError != 1) {
 					gllink_stock,
 					witholdingtaxexempted,
 					witholdingtaxglaccount,
+					supplier_returns_location,
 					freightact
 				FROM companies
 				WHERE coycode=1";
@@ -170,6 +172,7 @@ if ($InputError != 1) {
 	$_POST['FreightAct'] = $myrow['freightact'];
 	$_POST['WitholdingTaxExempted'] = $myrow['witholdingtaxexempted'];
 	$_POST['WitholdingTaxAct'] = $myrow['witholdingtaxglaccount'];
+  $_POST['SupplierGoodsReturnedLocation'] = $myrow['supplier_returns_location'];
 }
 
 echo '<tr>
@@ -495,6 +498,23 @@ echo '</select></td>
 
 	echo '</select></td>
 		</tr>';
+
+		echo '<tr>
+				<td>' . _('Supplier Returns Location') . ':</td>
+				<td><select title="' . _('Select the location to that is used to pick goods returned to supplier. ') . '" tabindex="23" name="SupplierGoodsReturnedLocation">';
+		$location_result = DB_query("SELECT loccode,locationname from locations");
+		while ($myrow = DB_fetch_array($location_result)) {
+			if ($_POST['SupplierGoodsReturnedLocation']==$myrow['loccode']){
+				echo '<option selected="selected" value="'. $myrow['loccode'] . '">' . htmlspecialchars($myrow['loccode'],ENT_QUOTES,'UTF-8') . ' ('.$myrow['locationname'].')</option>';
+			} else {
+				echo '<option value="'. $myrow['loccode'] . '">' . htmlspecialchars($myrow['loccode'],ENT_QUOTES,'UTF-8') . ' ('.$myrow['locationname'].')</option>';
+			}
+		} //end while loop
+
+		DB_data_seek($result,0);
+
+		echo '</select></td>
+			</tr>';
 
 echo '</table>
 	<br />

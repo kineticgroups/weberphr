@@ -244,7 +244,8 @@ if (isset($_POST['submit'])) {
 						depntype='" . $_POST['DepnType'] . "',
 						depnrate='" . filter_number_format($_POST['DepnRate']) . "',
 						barcode='" . $_POST['BarCode'] . "',
-						serialno='" . $_POST['SerialNo'] . "'
+						serialno='" . $_POST['SerialNo'] . "',
+						projectid='" . $_POST['Project'] . "'
 					WHERE assetid='" . $AssetID . "'";
 
 			$ErrMsg = _('The asset could not be updated because');
@@ -261,7 +262,9 @@ if (isset($_POST['submit'])) {
 											depntype,
 											depnrate,
 											barcode,
-											serialno)
+											serialno,
+                      projectid
+										)
 						VALUES (
 							'" . $_POST['Description'] . "',
 							'" . $_POST['LongDescription'] . "',
@@ -270,7 +273,9 @@ if (isset($_POST['submit'])) {
 							'" . $_POST['DepnType'] . "',
 							'" . filter_number_format($_POST['DepnRate']). "',
 							'" . $_POST['BarCode'] . "',
-							'" . $_POST['SerialNo'] . "' )";
+							'" . $_POST['Project'] . "',
+              '" . $_POST['SerialNo'] . "'
+							 )";
 			$ErrMsg =  _('The asset could not be added because');
 			$DbgMsg = _('The SQL that was used to add the asset failed was');
 			$result = DB_query($sql, $ErrMsg, $DbgMsg);
@@ -389,6 +394,7 @@ if (isset($_POST['submit'])) {
 		unset($_POST['DepnRate']);
 		unset($_POST['BarCode']);
 		unset($_POST['SerialNo']);
+		unset($_POST['Project']);
 		unset($AssetID);
 		unset($_SESSION['SelectedAsset']);
 
@@ -433,7 +439,8 @@ if (!isset($AssetID) OR $AssetID=='') {
 				accumdepn,
 				barcode,
 				disposalproceeds,
-				disposaldate
+				disposaldate,
+				projectid
 			FROM fixedassets
 			WHERE assetid ='" . $AssetID . "'";
 
@@ -448,6 +455,7 @@ if (!isset($AssetID) OR $AssetID=='') {
 	$_POST['DepnType']  = $AssetRow['depntype'];
 	$_POST['BarCode']  = $AssetRow['barcode'];
 	$_POST['DepnRate']  = locale_number_format($AssetRow['depnrate'],2);
+	$_POST['Project']  = $AssetRow['projectid'];
 
 	echo '<tr>
 			<td>' . _('Asset Code') . ':</td>
@@ -614,7 +622,26 @@ echo '</select></td>
 	<tr>
 		<td>' . _('Depreciation Rate') . ':</td>
 		<td><input ' . (in_array('DepnRate',$Errors) ?  'class="inputerror number"' : 'class="number"' ) .'  type="text" name="DepnRate" size="4" maxlength="4" value="' . $_POST['DepnRate'] . '" />%</td>
-	</tr>
+	</tr>';
+
+	echo '<tr><td>' .  _('Project') .':</td>
+			<td><select name="Project" >';
+echo'<option value="0" > Select Project </option>';
+			$sqlproject = "SELECT
+			id,
+			project_id,
+							project_name
+					FROM paprojects
+					WHERE status = '1'";
+					$resultproject = DB_query($sqlproject);
+
+			while ($myrowproject=DB_fetch_array($resultproject)) {
+
+					echo '<option '._(($myrowproject['id']==$_POST['Project'])? ' selected="selected" ' :'').' value="' . $myrowproject['id'] . '">' . $myrowproject['project_id'] .' - '.$myrowproject['project_name'].'</option>';
+
+			}
+
+	echo '</select></td></tr>
 	</table>';
 
 if (isset($AssetRow)){

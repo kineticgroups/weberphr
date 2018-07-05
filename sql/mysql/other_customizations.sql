@@ -16,3 +16,5 @@ CREATE TABLE IF NOT EXISTS `customerwitholdings` (
     PRIMARY KEY (`id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
   ALTER TABLE `customerwitholdings` ADD UNIQUE( `debtortransid`);
+ALTER TABLE `companies` ADD `supplier_returns_location` VARCHAR(20) NULL DEFAULT NULL;
+INSERT INTO  `scripts` values('SuppCreditControlled.php','2', 'Controlled supplier credit');

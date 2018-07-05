@@ -715,3 +715,5 @@ CREATE TABLE IF NOT EXISTS `patimesheetspayments` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 ALTER TABLE `paprojects` ADD `projectbudget` DOUBLE(12,2) NOT NULL AFTER `bankaccount`;
+INSERT INTO  `scripts` values('PaProjectResourcesReports.php','25', 'Generate Project Labour Resources Reports');
+ALTER TABLE `fixedassets` ADD `projectid` int(11) NOT NULL DEFAULT '0' AFTER `disposaldate`;

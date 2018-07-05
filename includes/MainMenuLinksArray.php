@@ -553,7 +553,7 @@ $MenuItems['FA']['Maintenance']['URL'] = array(	'/FixedAssetCategories.php',
 																																			   );
 
 																								$MenuItems['PA']['Reports']['URL'] = array(	'/PaEmplyeeTimeReport.php',
-																																			'/PaProjectSummaryReports.php',
+																																			'/PaProjectResourcesReports.php',
 																																			'/PaProjectStatusReports.php',
 																																			'/PaProjectInvoices.php',
 																																			'/PaProjectPurchaseOrders.php',
