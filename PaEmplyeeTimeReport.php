@@ -105,7 +105,6 @@ echo '</select> &nbsp;&nbsp'._('To') . ':
 	<th class="ascending">' . _('Project Name') . '</th>
 <th class="ascending">' . _('Customer Name') . '</th>
 <th class="ascending">' . _('Task Name') . '</th>
-<th class="ascending">' . _('Service Offered') . '</th>
 <th class="ascending">' . _('Duration') . '</th>';
 echo'</tr>';
 
@@ -146,14 +145,13 @@ $sumduration=0;
 					 projecttask_name,
 					 project_name,
 					 name,
-					 description,
-					patimesheetentries.project_id As projectid
+
+					paprojects.project_id As projectid
 					FROM patimesheetentries
 					JOIN patimesheetsinfo ON patimesheetentries.timesheetinfo_id=patimesheetsinfo.timesheetsinfo_id
 					JOIN paprojecttasks ON patimesheetentries.projecttask_id=paprojecttasks.projecttask_id
 					JOIN paprojects ON patimesheetentries.project_id=paprojects.id
 					Join debtorsmaster ON paprojects.customer=debtorsmaster.debtorno
-					JOIN stockmaster on paprojecttasks.servicetask = stockmaster.stockid
 					WHERE employee_id ='".$myrowemployeelists['employeeid']."'
           AND patimesheetsinfo.begin_date Between '".$Fromdate->format('Y-m-d')."' AND
 					'".$Todate->format('Y-m-d')."'
@@ -200,7 +198,6 @@ echo'<tr><td colspan="8">Grand Total Duration </td><td>'.$grandtotaltime.'</td><
 	<th class="ascending">' . _('Project Name') . '</th>
 
 	<th class="ascending">' . _('Task Name') . '</th>
-	<th class="ascending">' . _('Service Offered') . '</th>
 	<th class="ascending">' . _('Duration') . '</th>
 	<th class="ascending">' . _('Billable') . '</th>
 	<th class="ascending">' . _('Billed') . '</th>
@@ -255,16 +252,14 @@ while($myrowcustomerlists = DB_fetch_array($resultcustomerlists))
 			 projecttask_name,
 			 project_name,
 			 name,
-			 description,
 			 taskbillable,
 			 sheet_billed,
-			patimesheetentries.project_id As projectid
+			paprojects.project_id As projectid
 			FROM patimesheetentries
 			JOIN patimesheetsinfo ON patimesheetentries.timesheetinfo_id=patimesheetsinfo.timesheetsinfo_id
 			JOIN paprojecttasks ON patimesheetentries.projecttask_id=paprojecttasks.projecttask_id
 			JOIN paprojects ON patimesheetentries.project_id=paprojects.id
 			Join debtorsmaster ON paprojects.customer=debtorsmaster.debtorno
-			JOIN stockmaster on paprojecttasks.servicetask = stockmaster.stockid
 			WHERE employee_id ='".$myrowemployeelists['employeeid']."'
 			AND customer ='".$myrowcustomerlists['debtorno']."'
 			AND patimesheetsinfo.begin_date Between '".$Fromdate->format('Y-m-d')."' AND
@@ -289,7 +284,7 @@ if(DB_num_rows($resulttime)!=0){
 		<td>'.$myrowtime['projectid'].'</td>
 		<td>'.$myrowtime['project_name'].'</td>
 		<td>'.$myrowtime['projecttask_name'].'</td>
-		<td>'.$myrowtime['description'].'</td>
+
 		<td>'.$totalduration.'</td>
 		<td>'._(($myrowtime['taskbillable']==1)? 'YES':' NO ').'</td>
 		<td>'._(($myrowtime['sheet_billed']==1)? 'YES':' NO ').'</td>
@@ -329,10 +324,8 @@ echo'<tr><td colspan="7">Grand Total Duration </td><td>'.$grandtotaldurationcust
 				<th class="ascending">' . _('Subtotal name') . '</th>
 				<th class="ascending">' . _('Begin Date') . '</th>
 				<th class="ascending">' . _('End Date') . '</th>
-		<th class="ascending">' . _('Project ID') . '</th>
 		<th class="ascending">' . _('Customer Name') . '</th>
 		<th class="ascending">' . _('Task Name') . '</th>
-		<th class="ascending">' . _('Service Offered') . '</th>
 		<th class="ascending">' . _('Duration') . '</th>
 		<th class="ascending">' . _('Billable') . '</th>
 		<th class="ascending">' . _('Billed') . '</th>
@@ -386,16 +379,15 @@ echo'<tr><td colspan="7">Grand Total Duration </td><td>'.$grandtotaldurationcust
 				 projecttask_name,
 				 project_name,
 				 name,
-				 description,
+
 				 taskbillable,
 				 sheet_billed,
-				patimesheetentries.project_id As projectid
+				paprojects.project_id As projectid
 				FROM patimesheetentries
 				JOIN patimesheetsinfo ON patimesheetentries.timesheetinfo_id=patimesheetsinfo.timesheetsinfo_id
 				JOIN paprojecttasks ON patimesheetentries.projecttask_id=paprojecttasks.projecttask_id
 				JOIN paprojects ON patimesheetentries.project_id=paprojects.id
 				Join debtorsmaster ON paprojects.customer=debtorsmaster.debtorno
-				JOIN stockmaster on paprojecttasks.servicetask = stockmaster.stockid
 				WHERE employee_id ='".$myrowemployeelists['employeeid']."'
 				AND paprojects.project_id ='".$myrowprojectlists['project_id']."'
 				AND patimesheetsinfo.begin_date Between '".$Fromdate->format('Y-m-d')."' AND
@@ -417,10 +409,8 @@ echo'<tr><td></td>
 
 <td>'.$myrowtime['begindate'].'</td>
 <td>'.date('Y-m-d',strtotime($myrowtime['created_date'])).'</td>
-<td>'.$myrowtime['projectid'].'</td>
 <td>'.$myrowtime['name'].'</td>
 <td>'.$myrowtime['projecttask_name'].'</td>
-<td>'.$myrowtime['description'].'</td>
 <td>'.$totalduration.'</td>
 <td>'._(($myrowtime['taskbillable']==1)? 'YES':' NO ').'</td>
 <td>'._(($myrowtime['sheet_billed']==1)? 'YES':' NO ').'</td>
@@ -466,7 +456,6 @@ echo'
 					<th class="ascending">' . _('End Date') . '</th>
 			<th class="ascending">' . _('Project ID') . '</th>
 			<th class="ascending">' . _('Project Name') . '</th>
-			<th class="ascending">' . _('Service Offered') . '</th>
 			<th class="ascending">' . _('Duration') . '</th>
 			<th class="ascending">' . _('Billable') . '</th>
 			<th class="ascending">' . _('Billed') . '</th>
@@ -528,16 +517,15 @@ echo'
 					 projecttask_name,
 					 project_name,
 					 name,
-					 description,
 					 taskbillable,
 					 sheet_billed,
-					patimesheetentries.project_id As projectid
+					paprojects.project_id As projectid
 					FROM patimesheetentries
 					JOIN patimesheetsinfo ON patimesheetentries.timesheetinfo_id=patimesheetsinfo.timesheetsinfo_id
 					JOIN paprojecttasks ON patimesheetentries.projecttask_id=paprojecttasks.projecttask_id
 					JOIN paprojects ON patimesheetentries.project_id=paprojects.id
 					Join debtorsmaster ON paprojects.customer=debtorsmaster.debtorno
-					JOIN stockmaster on paprojecttasks.servicetask = stockmaster.stockid
+
 					WHERE employee_id ='".$myrowemployeelists['employeeid']."'
 					AND paprojecttasks.projecttask_id ='".$myrowtasklists['taskid']."'
 					AND patimesheetsinfo.begin_date Between '".$Fromdate->format('Y-m-d')."' AND
@@ -559,7 +547,7 @@ echo'
 						<td>'.date('Y-m-d',strtotime($myrowtime['created_date'])).'</td>
 						<td>'.$myrowtime['projectid'].'</td>
 						<td>'.$myrowtime['project_name'].'</td>
-						<td>'.$myrowtime['description'].'</td>
+
 						<td>'.$totalduration.'</td>
 						<td>'._(($myrowtime['taskbillable']==1)? 'YES':' NO ').'</td>
 						<td>'._(($myrowtime['sheet_billed']==1)? 'YES':' NO ').'</td>
@@ -601,7 +589,6 @@ echo'
 						<th class="ascending">' . _('Entry Date') . '</th>
 
 				<th class="ascending">' . _('Task Name') . '</th>
-				<th class="ascending">' . _('Service Offered') . '</th>
 
 				<th class="ascending">' . _('Employee ID') . '</th>
 				<th class="ascending">' . _('Employee Name') . '</th>
@@ -645,7 +632,6 @@ echo'
 						 projecttask_name,
 						 project_name,
 						 name,
-						 description,
 						 taskbillable,
 						 sheet_billed,
 						 patimesheetsinfo.employee_id As employeeid,
@@ -658,7 +644,6 @@ echo'
 						JOIN paprojecttasks ON patimesheetentries.projecttask_id=paprojecttasks.projecttask_id
 						JOIN paprojects ON patimesheetentries.project_id=paprojects.id
 						Join debtorsmaster ON paprojects.customer=debtorsmaster.debtorno
-						JOIN stockmaster on paprojecttasks.servicetask = stockmaster.stockid
 						JOIN hremployees ON patimesheetsinfo.employee_id=hremployees.empid
 						WHERE  paprojects.project_id ='".$myrowprojectlists['project_id']."'
 						AND patimesheetsinfo.begin_date Between '".$Fromdate->format('Y-m-d')."' AND
